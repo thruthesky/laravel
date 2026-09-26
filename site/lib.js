@@ -143,7 +143,9 @@
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'copy'; b.textContent = '복사'; b.setAttribute('data-no-gl', '');
     b.addEventListener('click', function () {
-      var t = pre.textContent;
+      var cp = pre.cloneNode(true);
+      L.$$('.cn', cp).forEach(function (x) { x.parentNode.removeChild(x); });
+      var t = cp.textContent;
       (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () {
         b.textContent = '복사됨'; b.classList.add('ok');
         setTimeout(function () { b.textContent = '복사'; b.classList.remove('ok'); }, 1400);
@@ -226,6 +228,7 @@
       var m = (c.className || '').match(/language-([\w-]+)/), lang = m ? m[1] : '';
       L.highlight(c, lang);
       if (!c.parentNode.parentNode.classList.contains('codebox')) L.codeBox(c.parentNode, lang);
+      if (ctx.slug) L.notes.whenReady(function () { L.notes.attach(c, ctx.slug); });
     });
     if (!ctx.noGloss) L.gloss.whenReady(function () { L.gloss.apply(root, { exclude: ctx.exclude, all: ctx.inPopup }); });
     return root;
@@ -285,6 +288,54 @@
       box.parentNode.insertBefore(bar, box);
       count();
     });
+  };
+
+  /* ── 코드 줄 각주 — site/notes.json ──────────────────── */
+  // 코드블록 안의 한 줄(match 문자열이 든 줄) 끝에 번호 배지를 붙이고, 누르거나 올리면 설명 팝업이 뜬다.
+  // md 코드블록에는 HTML 을 넣을 수 없어 설명을 따로 둔다. match 가 맞는지는 scripts/check_site.py 가 검사한다
+  var NT = L.notes = { list: [], bySlug: {}, done: false };
+  NT.ready = fetch('site/notes.json').then(function (r) {
+    if (!r.ok) throw new Error('notes.json — HTTP ' + r.status);
+    return r.json();
+  }).then(function (arr) {
+    arr.forEach(function (n, i) { n.id = i; NT.list.push(n); (NT.bySlug[n.slug] = NT.bySlug[n.slug] || []).push(n); });
+    NT.done = true;
+  }).catch(function (err) { console.warn('코드 각주를 읽지 못했습니다', err); NT.done = true; });
+  NT.whenReady = function (fn) { if (NT.done) fn(); else NT.ready.then(fn); };
+  NT.attach = function (code, slug) {
+    var list = NT.bySlug[slug];
+    if (!list || code.querySelector('.cn')) return 0;
+    var lines = code.textContent.split('\n'), hits = [];
+    list.forEach(function (n) {
+      for (var k = 0; k < lines.length; k++) if (lines[k].indexOf(n.match) >= 0) { hits.push({ n: n, k: k }); return; }
+    });
+    if (!hits.length) return 0;
+    hits.sort(function (a, b) { return a.k - b.k; });
+    // 줄 k 의 끝 위치(글자 수) — 뒤에서부터 넣어야 앞 위치가 흔들리지 않는다
+    var ends = [], off = 0;
+    lines.forEach(function (ln) { off += ln.length; ends.push(off); off += 1; });
+    for (var h = hits.length - 1; h >= 0; h--) {
+      var pos = ends[hits[h].k], w = document.createTreeWalker(code, NodeFilter.SHOW_TEXT), t, acc = 0, done = false;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'cn'; b.textContent = h + 1;
+      b.setAttribute('data-note', hits[h].n.id); b.setAttribute('data-no-gl', '');
+      b.setAttribute('aria-label', '코드 설명 ' + (h + 1));
+      while ((t = w.nextNode())) {
+        if (acc + t.data.length >= pos) { var rest = t.splitText(pos - acc); rest.parentNode.insertBefore(b, rest); done = true; break; }
+        acc += t.data.length;
+      }
+      if (!done) code.appendChild(b);
+      hits[h].n.num = h + 1;
+    }
+    var box = code.closest('.codebox');
+    if (box && !box.querySelector('.cn-hint')) {
+      var hint = document.createElement('span');
+      hint.className = 'cn-hint'; hint.setAttribute('data-no-gl', '');
+      hint.textContent = '번호에 올리면 줄 설명 · ' + hits.length + '개';
+      box.appendChild(hint);
+      box.classList.add('has-notes');
+    }
+    return hits.length;
   };
 
   /* ── 용어 사전 ────────────────────────────────────────── */

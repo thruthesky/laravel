@@ -1,0 +1,132 @@
+[
+ {
+  "slug": "lifecycle",
+  "match": "return Application::configure(basePath: dirname(__DIR__))",
+  "note": "앱(= 서비스 컨테이너) 객체를 만드는 사슬의 시작이다. `basePath` 는 프로젝트 루트로, `base_path()` 같은 경로 헬퍼의 기준이 된다. 맨 끝 `->create()` 까지 한 문장이다."
+ },
+ {
+  "slug": "lifecycle",
+  "match": "web: __DIR__.'/../routes/web.php',",
+  "note": "이 파일의 라우트 전부에 `web` 미들웨어 그룹(세션·쿠키·CSRF)이 자동으로 붙는다. 순수 PHP 라면 페이지마다 `session_start()` 를 부르던 일이다."
+ },
+ {
+  "slug": "lifecycle",
+  "match": "then: function () {",
+  "note": "기본 라우트 파일 등록이 끝난 뒤 불리는 콜백이다. PES 는 여기서 세 번째 라우트 파일 `routes/public.php` 를 직접 등록한다."
+ },
+ {
+  "slug": "lifecycle",
+  "match": "Route::middleware('public')->group(base_path('routes/public.php'));",
+  "note": "`public.php` 의 라우트에는 `web` 대신 아래에서 만든 `public` 그룹이 붙는다. 세션이 없으므로 여기서는 `$request->user()` 가 늘 `null` 이다([pitfalls 12절](pitfalls.md#12-공개-페이지에서-로그인-정보가-null))."
+ },
+ {
+  "slug": "lifecycle",
+  "match": "$middleware->group('public', [",
+  "note": "미들웨어 세 개를 `public` 이라는 이름 하나로 묶는다. 라우트에서는 `->middleware('public')` 처럼 이름으로만 부른다."
+ },
+ {
+  "slug": "lifecycle",
+  "match": "$middleware->encryptCookies(except: ['locale', 'signed_in']);",
+  "note": "Laravel 은 쿠키를 기본으로 `APP_KEY` 로 암호화한다. 여기 적은 두 쿠키만 암호화하지 않고 그대로 둔다."
+ },
+ {
+  "slug": "lifecycle",
+  "match": "$middleware->redirectGuestsTo(",
+  "note": "`auth` 미들웨어가 로그인하지 않은 사람을 보낼 곳이다. PES 는 보고 있던 언어를 잃지 않으려고 `lroute('login', …)` 로 언어 접두사를 붙인다."
+ },
+ {
+  "slug": "lifecycle",
+  "match": "$middleware->web(append: [LogoutSuspended::class]);",
+  "note": "기본 `web` 그룹 **맨 끝**에 PES 미들웨어를 더한다. 그래서 모든 `web` 라우트에서 정지된 회원이 로그아웃된다([routing 8절](routing.md#8-미들웨어-클래스-만들기))."
+ },
+ {
+  "slug": "lifecycle",
+  "match": "$exceptions->shouldRenderJsonWhen(",
+  "note": "오류를 JSON 으로 돌려줄지 정하는 규칙이다. 주소가 `api/*` 이거나 요청이 JSON 을 원하면(`expectsJson()`) HTML 오류 화면 대신 JSON 이 나간다."
+ },
+ {
+  "slug": "routing",
+  "match": "Route::macro('localized', function (Closure $routes) {",
+  "note": "`Route` 에 `localized()` 라는 메서드를 새로 붙인다(매크로). 인자 `$routes` 는 라우트들을 담은 클로저로, 아래에서 두 번 실행된다."
+ },
+ {
+  "slug": "routing",
+  "match": "$others = array_diff(array_keys(config('locales.locales')), [config('locales.default')]);",
+  "note": "설정에 있는 언어 코드 중 기본 언어를 뺀 목록(예: `ko`, `ja` …)이다. 기본 언어는 접두사 없는 URL 을 쓰므로 빠진다."
+ },
+ {
+  "slug": "routing",
+  "match": "Route::middleware(SetLocale::class)->group($routes);",
+  "note": "① 접두사 없는 버전을 등록한다. 이름은 적은 그대로(`tutor.schedule`)다."
+ },
+ {
+  "slug": "routing",
+  "match": "Route::prefix('{locale}')",
+  "note": "② 같은 라우트들을 `/{locale}` 아래에 한 번 더 등록한다. `{locale}` 은 URL 매개변수다."
+ },
+ {
+  "slug": "routing",
+  "match": "->where(['locale' => implode('|', $others)])",
+  "note": "`{locale}` 자리에 등록된 언어 코드만 오게 막는 정규식(`ko|ja|zh…`)이다. `/abc/tutor/schedule` 같은 주소는 404 가 된다."
+ },
+ {
+  "slug": "routing",
+  "match": "->name('localized.')",
+  "note": "두 번째 등록의 라우트 이름 앞에 `localized.` 를 붙인다. 그러지 않으면 ①과 이름이 겹친다. `lroute()` 가 언어를 보고 둘 중 하나를 고른다."
+ },
+ {
+  "slug": "eloquent",
+  "match": "->leftJoinLateral(",
+  "note": "PostgreSQL 의 LATERAL JOIN 이다. 강사 행마다 하위 쿼리(오늘 시간표 점수)를 따로 계산해 붙이고, 그 결과를 `today` 라는 이름으로 부른다."
+ },
+ {
+  "slug": "eloquent",
+  "match": "$total = \"tutor_profiles.profile_score",
+  "note": "점수 식을 PHP 문자열로 조립해 아래 `selectRaw` 에 넣는다. SQL 문자열에 변수를 직접 넣어도 되는 것은 **사용자 입력이 아닐 때뿐**이다 — 사용자 입력이면 `?` 바인딩."
+ },
+ {
+  "slug": "eloquent",
+  "match": "->select('tutor_profiles.*', 'today.schedule_points', 'today.trial_points')",
+  "note": "JOIN 하면 두 테이블의 칸 이름(`id` 등)이 겹친다. `tutor_profiles.*` 로 모델 칸을 분명히 하고 계산 칸만 더한다. 그러지 않으면 `users.id` 가 모델의 `id` 를 덮어쓸 수 있다."
+ },
+ {
+  "slug": "eloquent",
+  "match": "->selectRaw(\"{$total} as display_score\")",
+  "note": "SQL 에서 만든 계산 칸이다. 결과 모델에서 `$profile->display_score` 로 읽힌다(테이블에 없는 칸도 속성이 된다)."
+ },
+ {
+  "slug": "eloquent",
+  "match": "->orderByRaw('tutor_profiles.escrow_at is null')",
+  "note": "`is null` 은 참·거짓이고 오름차순이면 거짓(0)이 먼저다. 그래서 `escrow_at` 이 **있는** 강사가 앞에 온다."
+ },
+ {
+  "slug": "eloquent",
+  "match": "->orderByDesc('display_score');",
+  "note": "`selectRaw` 에서 붙인 별칭으로 정렬한다. 앞의 정렬이 같을 때만 이 기준이 쓰인다."
+ },
+ {
+  "slug": "database",
+  "match": "$table->boolean('trial_enabled')->default(false);",
+  "note": "이미 행이 있는 테이블에 칸을 더할 때는 기본값이 있어야 한다. 기존 행은 모두 `false` 로 채워진다."
+ },
+ {
+  "slug": "database",
+  "match": "DB::statement('UPDATE tutor_profiles SET trial_enabled = true",
+  "note": "구조만이 아니라 **데이터도** 마이그레이션 안에서 옮긴다. 모델 대신 SQL 을 쓰는 까닭은, 모델 코드는 나중에 바뀌어도 마이그레이션은 그 시점 구조로 언제든 다시 돌아야 하기 때문이다."
+ },
+ {
+  "slug": "database",
+  "match": "DB::statement('DELETE FROM tutor_slots WHERE is_trial');",
+  "note": "옛 무료 체험 칸을 지운다. 지운 데이터는 `down()` 으로도 되살릴 수 없다 — 운영 DB 에서 돌리기 전에 백업을 확인하는 지점이다."
+ },
+ {
+  "slug": "database",
+  "match": "DB::statement('ALTER TABLE tutor_slots DROP CONSTRAINT tutor_slots_valid');",
+  "note": "칸을 지우기 전에 그 칸을 쓰던 CHECK 제약부터 지운다. 순서를 바꾸면 PostgreSQL 이 칸 삭제를 거부할 수 있다."
+ },
+ {
+  "slug": "database",
+  "match": "CHECK (weekday BETWEEN 0 AND 6 AND duration_minutes > 0 AND points > 0)');",
+  "note": "같은 이름으로 새 규칙의 제약을 다시 건다. `is_trial` 조건이 빠진 모양이다."
+ }
+]

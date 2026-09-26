@@ -705,3 +705,26 @@ table.quiz td:first-child { white-space: nowrap; }
 .pop ul.used a small { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; }
 .pop ul.used p { margin: 2px 0 0; font-size: 12.5px; color: var(--ink2); line-height: 1.5; }
 .pop ul.used mark { background: var(--mark); color: inherit; border-radius: 2px; }
+
+/* ── 코드 줄 각주 ─────────────────────────────────────────── */
+.cn {
+  display: inline-flex; align-items: center; justify-content: center; vertical-align: 1px;
+  min-width: 18px; height: 18px; margin-inline-start: 10px; padding: 0 5px;
+  font: 700 11px/1 var(--font); color: #fff; background: var(--accent);
+  border: 0; border-radius: 999px; cursor: pointer; user-select: none;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.cn:hover, .cn.gl-open { background: var(--accent-ink); box-shadow: 0 0 0 4px var(--accent-line); }
+.codebox .cn-hint {
+  position: absolute; left: 12px; bottom: -9px; font-size: 11px; font-weight: 700; line-height: 1;
+  color: var(--accent-ink); background: var(--card); border: 1px solid var(--accent-line);
+  border-radius: 999px; padding: 3px 8px; pointer-events: none;
+}
+.codebox.has-notes { margin-bottom: 1.5em; }
+.pop.note .pop-t { font-size: 14.5px; }
+.pop.note .cn-n {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px;
+  margin-inline-start: 4px; padding: 0 6px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 12px;
+}
+.pop.note .cn-line { margin: 0 0 10px; padding: 8px 10px; font-size: 12px; white-space: pre-wrap; word-break: break-all; background: var(--code-bg); border-radius: 8px; }
+.pop.note .cn-note { margin: 0; }

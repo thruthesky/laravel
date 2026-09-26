@@ -126,10 +126,64 @@ for e in G:
     if t.rstrip('()') not in alltext:
         unused.append(t)
 
+# ── 4. 코드 줄 각주 site/notes.json ───────────────────────
+# match 문자열은 그 문서의 코드블록 안에서 딱 한 줄에만 있어야 한다 — 없으면 배지가 안 붙고, 여러 줄이면 엉뚱한 줄에 붙는다
+n_notes = 0
+np_ = os.path.join(ROOT, 'site', 'notes.json')
+if os.path.exists(np_):
+    try:
+        NOTES = json.load(open(np_, encoding='utf-8'))
+    except Exception as e:
+        errors.append(f'notes.json 을 읽지 못했다 — {e}')
+        NOTES = []
+    code_lines = {k: [ln for blk in re.findall(r'```[^\n]*\n(.*?)```', v, flags=re.S) for ln in blk.split('\n')]
+                  for k, v in texts.items()}
+    seen_n = set()
+    for n in NOTES:
+        sl, mt = n.get('slug', ''), n.get('match', '')
+        if not n.get('note'):
+            errors.append(f'notes.json: {sl} "{mt}" — note 가 비었다')
+        if sl not in code_lines:
+            errors.append(f'notes.json: 문서 "{sl}" 가 없다')
+            continue
+        hit = sum(1 for ln in code_lines[sl] if mt in ln)
+        if hit == 0:
+            errors.append(f'notes.json: {sl} — "{mt}" 가 든 코드 줄이 없다')
+        elif hit > 1:
+            errors.append(f'notes.json: {sl} — "{mt}" 가 코드 {hit}줄에 있다(한 줄에만 있게 더 길게 적는다)')
+        if (sl, mt) in seen_n:
+            errors.append(f'notes.json: {sl} "{mt}" 가 두 번 있다')
+        seen_n.add((sl, mt))
+        n_notes += 1
+
+# ── 5. 홈·흐름도의 미리보기 대상 ─────────────────────────────
+def check_pv(src, where):
+    for key in re.findall(r"""data-pv=["']([^"']+)["']""", src) + re.findall(r"""'([a-z-]+#[^']+)'\]""", src):
+        slug, _, frag = key.partition('#')
+        if slug not in anchors:
+            errors.append(f'{where}: 미리보기 "{key}" — 문서가 없다')
+        elif frag and frag not in anchors[slug]:
+            errors.append(f'{where}: 미리보기 "{key}" — 그런 제목이 없다')
+for f in ('index.html', 'site/flow.js'):
+    p = os.path.join(ROOT, f)
+    if os.path.exists(p):
+        check_pv(open(p, encoding='utf-8').read(), f)
+
+# ── 6. 조용히 어긋날 수 있는 곳(경고) ─────────────────────────
+# 절마다 되풀이되는 소제목(-1·-2 번호가 붙는 앵커)을 가리키는 see 는, 앞에 같은 소제목이 하나 늘면 다른 절을 가리킨다
+REPEAT = re.compile(r'#(핵심-개념|순수-php-와-비교|읽는-법|구조)(-\d+)?$')
+fragile = [e.get('term') for e in G if REPEAT.search(e.get('see', ''))]
+if fragile:
+    warns.append(f'glossary: 되풀이 소제목을 가리키는 see {len(fragile)}개 — 이 문서들 앞쪽에 "핵심 개념" 같은 소제목을 끼워 넣지 말 것 (예: {", ".join(fragile[:4])} …)')
+no_php = [e.get('term') for e in G if not e.get('php')]
+if no_php:
+    warns.append(f'glossary: 순수 PHP 비교(php)가 없는 용어 {len(no_php)}개')
+
 # ── 결과 ───────────────────────────────────────────────────
 lines = sum(len(s.splitlines()) for s in texts.values())
 print(f'문서 {len(texts)}편 · {lines:,}줄 · 제목 {sum(len(a) for a in anchors.values())}개 · 내부 링크 {nlinks}개')
 print(f'용어 {len(G)}개 (예제 {n_ex}개) · 본문에 한 번도 안 나오는 용어 {len(unused)}개')
+print(f'코드 각주 {n_notes}개')
 for w in warns:
     print('  ⚠', w)
 for e in errors:

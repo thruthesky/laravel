@@ -15,7 +15,7 @@
 
   function trigOf(node) {
     if (!node || !node.closest) return null;
-    return node.closest('.gl[data-t], a[data-pv]');
+    return node.closest('.gl[data-t], a[data-pv], .cn[data-note]');
   }
   function byEl(el) { for (var i = 0; i < stack.length; i++) if (stack[i].el === el) return stack[i]; return null; }
   function byTrig(t) { for (var i = 0; i < stack.length; i++) if (stack[i].trig === t) return stack[i]; return null; }
@@ -55,6 +55,10 @@
       var e = G.byId[t.getAttribute('data-t')];
       if (!e) return null;
       p.el = termPop(e, p);
+    } else if (t.classList.contains('cn')) {
+      var n = L.notes.list[+t.getAttribute('data-note')];
+      if (!n) return null;
+      p.el = notePop(n, t);
     } else {
       p.el = linkPop(t.getAttribute('data-pv'), p);
     }
@@ -210,6 +214,32 @@
     return el;
   }
 
+  /* ── ③ 코드 줄 각주 ──────────────────────────────────── */
+  function notePop(n, t) {
+    var el = shell('note', '코드 설명 ' + (n.num || ''));
+    el.innerHTML =
+      '<div class="pop-h"><span class="pop-t">코드 설명 <span class="cn-n"></span></span>' +
+      '<button class="pop-x" type="button" aria-label="닫기">×</button></div>' +
+      '<div class="pop-b"><pre class="cn-line"><code></code></pre><p class="cn-note"></p></div>';
+    el.querySelector('.cn-n').textContent = n.num || '';
+    // 배지가 붙은 줄의 글자(배지 번호 빼고)
+    var code = t.closest('code'), line = '';
+    if (code) {
+      var cp = code.cloneNode(true);
+      L.$$('.cn', cp).forEach(function (x) { x.parentNode.removeChild(x); });
+      cp.textContent.split('\n').some(function (ln) { if (ln.indexOf(n.match) >= 0) { line = ln.trim(); return true; } return false; });
+    }
+    var c = el.querySelector('.cn-line code');
+    c.textContent = line || n.match;
+    L.highlight(c, 'php');
+    var body = el.querySelector('.cn-note');
+    body.innerHTML = L.inline(n.note);
+    L.enhance(body, { slug: n.slug, inPopup: true, noGloss: true });
+    allowGloss(el.querySelector('.pop-b'));
+    L.gloss.whenReady(function () { L.gloss.apply(body, { all: true }); });
+    return el;
+  }
+
   /* ── ② 링크 미리보기 ─────────────────────────────────── */
   function linkPop(key, p) {
     var parts = key.split('#'), slug = parts[0], anchor = parts.slice(1).join('#');
@@ -278,7 +308,7 @@
     if (term && G.mode === 'off') return;
     if (byTrig(t)) { clearTimeout(closeT); return; }
     clearTimeout(openT);
-    openT = setTimeout(function () { if (overEl && t.contains(overEl)) open(t); }, term ? D_TERM : D_LINK);
+    openT = setTimeout(function () { if (overEl && t.contains(overEl)) open(t); }, term || t.classList.contains('cn') ? D_TERM : D_LINK);
   });
   document.addEventListener('mouseout', function (ev) {
     if (!L.hoverable) return;
@@ -291,7 +321,7 @@
     if (x) { var px = popOf(x); if (px) close(px); return; }
     var t = trigOf(ev.target);
     if (t) {
-      if (t.classList.contains('gl')) {
+      if (t.classList.contains('gl') || t.classList.contains('cn')) {
         ev.preventDefault();
         var ex = byTrig(t);
         if (ex && ex.pinned) close(ex);
