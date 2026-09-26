@@ -117,6 +117,8 @@ docker compose exec app php artisan tinker
 > lroute('tutor.schedule')
 ```
 
+숫자(`15`)는 발췌 시점(2026-09-26) 값이다. 운영 규정 숫자는 바뀔 수 있으니 지금 값은 `docker compose exec app php artisan config:show tutor` 로 확인한다.
+
 안전 규칙:
 
 - **조회는 자유롭게.** `create`·`update`·`delete` 는 로컬 DB 에서만, 운영 서버에서는 하지 않는다.

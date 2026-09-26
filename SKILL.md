@@ -58,7 +58,7 @@ description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치�
 | 5 | Blade | [blade.md](references/blade.md) | 레이아웃 상속·컴포넌트·폼 지시어(`@csrf`·`@method`·`@error`)를 읽는다 |
 | 6 | DB 구조 | [database.md](references/database.md) | 마이그레이션 하나를 읽고 만들어질 테이블을 그린다. 팩토리로 테스트 데이터를 만든다 |
 | 7 | 테스트 | [testing.md](references/testing.md) | PES 의 Pest 테스트 하나를 읽고 무엇을 검사하는지 말한다 |
-| 수시 | 명령·함정 | [artisan.md](references/artisan.md) · [pitfalls.md](references/pitfalls.md) | `route:list`·`tinker`·`model:show` 로 스스로 조사한다. 함정 10개를 피한다 |
+| 수시 | 명령·함정 | [artisan.md](references/artisan.md) · [pitfalls.md](references/pitfalls.md) | `route:list`·`tinker`·`model:show` 로 스스로 조사한다. 함정 12개를 피한다 |
 
 1~3단계는 하루씩, 4단계는 2~3일을 잡는다. 1단계를 마치면 바로 [lifecycle.md](references/lifecycle.md) 의 "요청 한 바퀴 따라가기"를 해 본다 — 이후 단계는 그 한 바퀴의 각 칸을 깊게 파는 일이다.
 
