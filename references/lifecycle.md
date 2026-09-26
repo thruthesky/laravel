@@ -101,6 +101,13 @@ return Application::configure(basePath: dirname(__DIR__))
 | `$middleware->web(append: [...])` | 기본 `web` 그룹 끝에 미들웨어 추가 |
 | `redirectGuestsTo(...)` | `auth` 미들웨어가 손님을 보낼 곳 |
 | `withExceptions(...)` | 예외를 HTML 로 보여 줄지 JSON 으로 줄지 등 |
+| `commands: .../routes/console.php` | Artisan 명령(클로저 명령·스케줄)을 적는 파일을 등록 |
+| `health: '/up'` | Laravel 11+ 기본 헬스 체크 URL. 앱이 떠 있으면 200 을 돌려준다 — 서버·모니터링이 "살아 있나"를 물을 때 쓴다 |
+| `DetectLocale::class` | PES 미들웨어. `public` 그룹에는 세션이 없으므로, 세션을 쓰는 `web` 쪽 `SetLocale`([routing.md 8절](routing.md#8-미들웨어-클래스-만들기))과 따로 둔 언어 결정 담당이다(코드는 발췌에 없다) |
+| `SubstituteBindings::class` | Laravel 기본 미들웨어. `{tutor}` 같은 URL 조각을 모델로 바꾸는 [라우트 모델 바인딩](routing.md#5-url-매개변수와-모델-바인딩)을 한다. `web` 그룹에는 기본으로 들어 있지만 `public` 그룹은 직접 만든 묶음이라 손으로 넣었다 |
+| `CachePublicPage::class` | PES 미들웨어. 위 주석대로 공개 페이지를 Cloudflare 가 캐시할 수 있게 하는 담당이다([routing.md 9절](routing.md#9-webphp-와-publicphp), 코드는 발췌에 없다) |
+| `encryptCookies(except: [...])` | Laravel 은 쿠키를 기본으로 암호화한다. `locale`·`signed_in` 두 쿠키만 암호화하지 않고 그대로 둔다 — `signed_in` 은 로그인할 때 `SignedInCookie::make()` 로 심는 쿠키다([controllers.md 9절](controllers.md#9-인증--로그인로그아웃)) |
+| `shouldRenderJsonWhen(fn ...)` | 주소가 `api/*` 이거나 요청이 JSON 을 원하면(`Accept: application/json`) 오류도 HTML 대신 JSON 으로 돌려준다 |
 
 ---
 
