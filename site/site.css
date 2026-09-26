@@ -808,3 +808,12 @@ body.has-drawer #menuBtn { display: inline-flex; }
 }
 .side .ol-doc .toc a.h3 { padding-inline-start: 34px; font-size: 12.4px; color: color-mix(in srgb, var(--muted) 85%, var(--bg)); }
 .side .ol-doc .toc a.h3.cur { color: var(--accent-ink); }
+/* 넓은 화면 — 홈·용어 사전도 사이드바를 늘 보여 준다(문서 화면과 같은 기준 981px) */
+@media (min-width: 981px) {
+  body.has-drawer { padding-left: 300px; }
+  body.has-drawer .top { margin-left: -300px; }
+  body.has-drawer .side.drawer {
+    width: 300px; transform: none; transition: none; box-shadow: none; z-index: 30;
+  }
+  body.has-drawer #menuBtn, body.has-drawer .scrim, body.has-drawer.menu-open .scrim { display: none; }
+}
