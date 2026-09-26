@@ -50,7 +50,7 @@
       el.querySelector('.goal').appendChild(document.createTextNode(d.goal || d.desc));
       box.appendChild(el);
       L.loadParsed(d.slug).then(function (P) {
-        var hs2 = P.heads.filter(function (h) { return h.lv === 2 && h.text !== '목차' && !/암기 카드$/.test(h.text); });
+        var hs2 = L.outlineHeads(P, { noCards: true });
         var box = el.querySelector('.heads');
         hs2.slice(0, 6).forEach(function (h) {
           var a = document.createElement('a');

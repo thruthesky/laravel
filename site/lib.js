@@ -588,7 +588,7 @@
     top.setAttribute('data-no-gl', '');
     top.innerHTML =
       '<div class="in">' +
-      (active === 'doc' ? '<button class="iconbtn" id="menuBtn" type="button" aria-label="문서 목록 열기">' + ICON.menu + '</button>' : '') +
+      '<button class="iconbtn" id="menuBtn" type="button" aria-label="상세 목차 열기" aria-expanded="false" title="상세 목차">' + ICON.menu + '</button>' +
       '<a class="brand" href="index.html"><span class="logo">L</span><span class="txt"><b>Laravel 13 공부</b><small>PES 코드로 배우는</small></span></a>' +
       '<button class="search-trigger" type="button" id="searchBtn" aria-label="검색 열기">' + ICON.search +
       '<span>용어·개념·코드 검색</span><kbd>' + (mac ? '⌘' : 'Ctrl') + '</kbd><kbd>K</kbd></button>' +
@@ -599,6 +599,8 @@
       '<a class="iconbtn gh" href="' + SITE.repo + '" target="_blank" rel="noopener" aria-label="GitHub 저장소" title="GitHub 저장소">' + ICON.gh + '</a>' +
       '</nav></div>';
     document.body.insertBefore(top, document.body.firstChild);
+    // 상세 목차 — 문서 화면은 #side 가 이미 있고, 홈·용어 사전은 서랍을 만든다(site/outline.js)
+    if (L.outline) { if (active !== 'doc') L.outlineDrawer(); L.menu(); }
     top.querySelector('#themeBtn').addEventListener('click', L.toggleTheme);
     top.querySelector('#searchBtn').addEventListener('click', function () { if (L.search) L.search.open(''); });
     // 용어 밑줄 단추

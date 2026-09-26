@@ -175,7 +175,7 @@ def check_pv(src, where):
             errors.append(f'{where}: 미리보기 "{key}" — 문서가 없다')
         elif frag and frag not in anchors[slug]:
             errors.append(f'{where}: 미리보기 "{key}" — 그런 제목이 없다')
-for f in ('index.html', 'site/flow.js'):
+for f in ('index.html', 'site/flow.js', 'site/outline.js'):
     p = os.path.join(ROOT, f)
     if os.path.exists(p):
         check_pv(open(p, encoding='utf-8').read(), f)

@@ -11,38 +11,24 @@
   var slug = L.docBySlug[P.get('d')] ? P.get('d') : 'skill';
   var d = L.docBySlug[slug];
   var art = L.$('#doc'), side = L.$('#side'), findIn = L.$('#find'), cnt = L.$('#findCnt');
-  var BADGE = { skill: '★', readme: '+', artisan: '$', pitfalls: '!', exercises: '?' };
   document.title = d.title + ' · Laravel 13 공부';
 
-  /* ── 왼쪽 목록 ────────────────────────────────────────── */
-  var groups = [
-    ['시작', function (x) { return x.slug === 'skill'; }],
-    ['공부 로드맵', function (x) { return typeof x.stage === 'number'; }],
-    ['수시로 보기', function (x) { return typeof x.stage !== 'number' && x.slug !== 'skill' && x.stage !== '심화'; }],
-    ['심화 — 실무로', function (x) { return x.stage === '심화'; }]
-  ];
-  var h = '';
-  groups.forEach(function (g) {
-    h += '<div class="lbl">' + g[0] + '</div>';
-    L.docs.filter(g[1]).forEach(function (x) {
-      var n = typeof x.stage === 'number' ? x.stage : (BADGE[x.slug] || (x.stage === '심화' ? '◆' : '·'));
-      h += '<a class="d' + (L.done.get(x.slug) ? ' done' : '') + (x === d ? ' cur" aria-current="page' : '') + '" href="doc.html?d=' + x.slug + '">' +
-        '<span class="n">' + L.esc(n) + '</span><span>' + L.esc(x.short) + '</span></a>';
-      if (x === d) h += '<nav class="toc" id="toc" aria-label="이 문서의 목차"></nav>';
-    });
-  });
-  side.innerHTML = h;
-  var tocBox = L.$('#toc');
+  /* ── 왼쪽 상세 목차 — site/outline.js ─────────────────── */
+  // 문서 22편과 각 문서의 절 목차. 지금 문서는 펼친 채 h2·h3 까지, 다른 문서는 ▸ 로 펼친다
+  var ol = L.outline(side, { current: slug });
+  // 사용자가 목차를 직접 만진 뒤 잠시는 본문 스크롤을 따라 목차를 끌어당기지 않는다
+  var sideTouched = 0;
+  function touched() { sideTouched = Date.now(); }
+  side.onUserToggle = touched;
+  ['wheel', 'touchmove', 'keydown'].forEach(function (t) { side.addEventListener(t, touched, { passive: true }); });
+  // 목록이 길어졌으니 처음에 지금 문서가 보이게 한다
+  var meRow = side.querySelector('.ol-doc.me');
+  if (meRow) side.scrollTop = Math.max(0, meRow.offsetTop - 90);
 
   L.$('#crumb').innerHTML = '<b>' + L.esc(L.stageLabel(d)) + '</b> · ' + L.esc(d.short);
   L.$('#src').href = L.srcUrl(d);
 
-  // 휴대폰 — 목록 서랍
-  var menu = L.$('#menuBtn');
-  function menuOpen(on) { document.body.classList.toggle('menu-open', on); if (menu) menu.setAttribute('aria-expanded', on ? 'true' : 'false'); }
-  if (menu) menu.addEventListener('click', function () { menuOpen(!document.body.classList.contains('menu-open')); });
-  L.$('#scrim').addEventListener('click', function () { menuOpen(false); });
-  side.addEventListener('click', function (ev) { if (ev.target.closest('a')) menuOpen(false); });
+  // 메뉴 단추(좁은 화면의 서랍)는 site/outline.js 의 L.menu 가 연다
 
   /* ── 본문 ─────────────────────────────────────────────── */
   L.loadMd(slug).then(function (md) {
@@ -74,7 +60,7 @@
       chk.checked = L.done.get(slug);
       chk.addEventListener('change', function () {
         L.done.set(slug, chk.checked);
-        var me = side.querySelector('a.d.cur');
+        var me = side.querySelector('.ol-doc.me a.d');
         if (me) me.classList.toggle('done', chk.checked);
       });
     }
@@ -112,37 +98,24 @@
       el.appendChild(a);
     });
 
-    // 왼쪽 목차
-    var tocLinks = [];
-    hs.forEach(function (el) {
-      if ((el.tagName !== 'H2' && el.tagName !== 'H3') || el.classList.contains('md-toc')) return;
-      if (el.tagName === 'H3' && /^(핵심 개념|순수 PHP 와 비교|읽는 법|구조)$/.test(el.textContent.replace(/#$/, '').trim())) return;   // 절마다 되풀이되는 소제목은 뺀다
-      var a = document.createElement('a');
-      a.href = '#' + el.id;
-      a.className = el.tagName.toLowerCase();
-      a.textContent = el.firstChild ? el.textContent.replace(/#$/, '').trim() : '';
-      tocBox.appendChild(a);
-      tocLinks.push([el, a]);
-    });
-
-    // 지금 읽는 절 표시
-    if ('IntersectionObserver' in window && tocLinks.length) {
-      var vis = {};
-      var io = new IntersectionObserver(function (es) {
-        es.forEach(function (e) { vis[e.target.id] = e.isIntersecting; });
+    // 지금 읽는 절 표시 — 상세 목차의 이 문서 링크와 본문 제목을 잇는다
+    ol.ready.then(function (links) {
+      var tocLinks = links.map(function (l) { return [document.getElementById(l.anchor), l.a]; }).filter(function (x) { return x[0]; });
+      if (!('IntersectionObserver' in window) || !tocLinks.length) return;
+      var io = new IntersectionObserver(function () {
         var cur = null;
         for (var i = 0; i < tocLinks.length; i++) {
           var r = tocLinks[i][0].getBoundingClientRect();
           if (r.top < window.innerHeight * 0.3) cur = tocLinks[i][1]; else break;
         }
         tocLinks.forEach(function (x) { x[1].classList.toggle('cur', x[1] === cur); });
-        if (cur) {
+        if (cur && Date.now() - sideTouched > 4000 && !document.body.classList.contains('menu-open')) {
           var sr = side.getBoundingClientRect(), cr = cur.getBoundingClientRect();
-          if (cr.top < sr.top + 60 || cr.bottom > sr.bottom - 40) side.scrollTop += cr.top - sr.top - sr.height / 3;
+          if (cr.top < sr.top + 120 || cr.bottom > sr.bottom - 40) side.scrollTop += cr.top - sr.top - sr.height / 3;
         }
       }, { rootMargin: '0px 0px -60% 0px', threshold: [0, 1] });
       tocLinks.forEach(function (x) { io.observe(x[0]); });
-    }
+    });
 
     // 이전·다음 문서
     var pg = L.$('#pager'), pv = L.docs[d.i - 1], nx = L.docs[d.i + 1];
