@@ -68,9 +68,10 @@ for slug, path in DOCS.items():
 
 # ── 2. md 링크 ─────────────────────────────────────────────
 path2slug = {v: k for k, v in DOCS.items()}
-nlinks = 0
+nlinks, bare = 0, []
 for slug, s in texts.items():
     body = re.sub(r'```.*?```', '', s, flags=re.S)
+    body = re.sub(r'^#{1,6} .*$', '', body, flags=re.M)   # 제목 줄의 문서 링크(문서 전체를 가리킴)는 뺀다
     for href in re.findall(r'\]\(([^)\s]+)\)', body):
         if re.match(r'^[a-z][a-z0-9+.-]*:', href, re.I):
             continue
@@ -84,6 +85,8 @@ for slug, s in texts.items():
         nlinks += 1
         if frag and frag not in anchors.get(tgt, ()):
             errors.append(f'{DOCS[slug]}: 링크 {href} — 그런 제목이 없다')
+        elif file and not frag and slug != 'skill':   # SKILL.md 의 로드맵·지도 표는 문서 전체를 가리키는 것이 맞다
+            bare.append(f'{DOCS[slug]} → {file}')
 
 # ── 3. 용어 사전 ───────────────────────────────────────────
 gp = os.path.join(ROOT, 'site', 'glossary.json')
@@ -175,6 +178,9 @@ REPEAT = re.compile(r'#(핵심-개념|순수-php-와-비교|읽는-법|구조)(-
 fragile = [e.get('term') for e in G if REPEAT.search(e.get('see', ''))]
 if fragile:
     warns.append(f'glossary: 되풀이 소제목을 가리키는 see {len(fragile)}개 — 이 문서들 앞쪽에 "핵심 개념" 같은 소제목을 끼워 넣지 말 것 (예: {", ".join(fragile[:4])} …)')
+# 앵커 없는 문서 링크 — 미리보기 팝업이 그 절 대신 문서 목차만 띄운다
+if bare:
+    warns.append(f'앵커(#) 없는 문서 링크 {len(bare)}개 — 팝업이 목차만 보여 준다: ' + ', '.join(bare[:6]) + (' …' if len(bare) > 6 else ''))
 no_php = [e.get('term') for e in G if not e.get('php')]
 if no_php:
     warns.append(f'glossary: 순수 PHP 비교(php)가 없는 용어 {len(no_php)}개')

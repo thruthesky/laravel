@@ -119,7 +119,7 @@ DB::whenQueryingForLongerThan(500, function ($connection, $event) {
 
 느린 쿼리를 찾았으면 그 SQL 을 `toRawSql()` 로 뽑아 PostgreSQL 의 `EXPLAIN ANALYZE` 로 본다. 인덱스가 없는 `where`·`orderBy` 칸이 흔한 원인이다([database.md](database.md#3-컬럼-타입과-수식어) 3절의 `index()`).
 
-> N+1 을 개발 중에 예외로 바로 잡아 주는 `Model::preventLazyLoading()` 은 [eloquent-plus.md](eloquent-plus.md) 에서 다룬다.
+> N+1 을 개발 중에 예외로 바로 잡아 주는 `Model::preventLazyLoading()` 은 [eloquent-plus.md](eloquent-plus.md#5-엄격-모드--조용한-실수를-예외로) 에서 다룬다.
 
 ---
 
@@ -302,7 +302,7 @@ $rate = rescue(fn () => ExchangeApi::fetch(), config('pay.default_rate'));
 | `true` | 예외 이름·메시지·스택 트레이스·요청 정보가 다 보이는 개발용 화면 | 로컬만 |
 | `false` | "Server Error" 한 줄의 짧은 화면 | **운영은 반드시** |
 
-> ⚠ 운영에서 `APP_DEBUG=true` 면 오류 화면에 **환경 변수·DB 정보·코드 경로**가 드러날 수 있다. 배포 체크리스트의 첫 줄이다([deploy.md](deploy.md)).
+> ⚠ 운영에서 `APP_DEBUG=true` 면 오류 화면에 **환경 변수·DB 정보·코드 경로**가 드러날 수 있다. 배포 체크리스트의 첫 줄이다([deploy.md](deploy.md#4-배포-순서-체크리스트)).
 
 ### 오류 화면 바꾸기
 

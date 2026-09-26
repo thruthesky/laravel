@@ -202,7 +202,7 @@ public/storage/avatars/x.jpg   (링크)
 storage/app/public/avatars/x.jpg   (실제 파일)
 ```
 
-> ⚠ **배포에서 가장 많이 빠뜨리는 명령**이다. 증상은 "업로드는 되는데 사진이 404"다. 링크는 git 에 올라가지 않는다(`public/storage` 는 `.gitignore` 에 있다). 새 서버나 새 컨테이너마다 한 번씩 만든다. [deploy.md](deploy.md) 의 체크리스트에도 있다.
+> ⚠ **배포에서 가장 많이 빠뜨리는 명령**이다. 증상은 "업로드는 되는데 사진이 404"다. 링크는 git 에 올라가지 않는다(`public/storage` 는 `.gitignore` 에 있다). 새 서버나 새 컨테이너마다 한 번씩 만든다. [deploy.md](deploy.md#4-배포-순서-체크리스트) 의 체크리스트에도 있다.
 
 **왜 처음부터 `public/` 에 저장하지 않나** — `public/` 은 코드 배포 때 통째로 바뀌는 폴더다. 사용자가 올린 파일은 배포와 상관없이 남아야 하므로 `storage/` 에 두고 링크만 건다.
 
@@ -385,7 +385,7 @@ Cache::lock("report.daily", 60)->get(fn () => 일일_보고서());
 Cache::lock("seat.{$slotId}", 10)->block(5, fn () => 예약하기($slotId));
 ```
 
-> 잠금은 "동시에 들어오지 마라"만 막는다. 데이터가 틀어지지 않게 하는 마지막 방어선은 DB 의 unique 제약과 트랜잭션이다([transactions.md](transactions.md)).
+> 잠금은 "동시에 들어오지 마라"만 막는다. 데이터가 틀어지지 않게 하는 마지막 방어선은 DB 의 unique 제약과 트랜잭션이다([transactions.md](transactions.md#10-db-제약이-최후-방어선)).
 
 ---
 

@@ -307,7 +307,7 @@ class PostResource extends JsonResource
 
 ### ⚠ 운영에서는 APP_DEBUG=false
 
-`APP_DEBUG=true` 이면 500 오류 JSON 에 **예외 메시지·파일 경로·스택**이 실린다. 운영 서버에서는 반드시 끈다([deploy.md](deploy.md)).
+`APP_DEBUG=true` 이면 500 오류 JSON 에 **예외 메시지·파일 경로·스택**이 실린다. 운영 서버에서는 반드시 끈다([deploy.md](deploy.md#1-로컬과-운영은-env-가-다르다)).
 
 ---
 
@@ -440,7 +440,7 @@ Route::middleware('throttle:api')->group(…);
 
 - 로그인한 사용자는 사용자 id 로, 아니면 IP 로 센다.
 - 응답 헤더 `X-RateLimit-Limit`·`X-RateLimit-Remaining` 으로 남은 횟수가 나가고, 넘으면 `Retry-After` 가 붙는다.
-- 횟수는 **캐시**에 센다. 서버가 여러 대면 캐시가 공유(Redis 등)돼야 제한이 맞는다([files-cache.md](files-cache.md)).
+- 횟수는 **캐시**에 센다. 서버가 여러 대면 캐시가 공유(Redis 등)돼야 제한이 맞는다([files-cache.md](files-cache.md#8-캐시-드라이버와-키-설계)).
 - `routes/api.php` 전체에 한 번에 걸고 싶으면 `bootstrap/app.php` 의 `->withMiddleware()` 에서 `$middleware->throttleApi();` 를 쓴다 — 쓰기 전에 공식 문서(Rate Limiting)로 확인한다.
 
 ---

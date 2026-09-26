@@ -285,7 +285,7 @@ use Illuminate\Contracts\Queue\ShouldQueueAfterCommit;
 class SendReceipt implements ShouldQueueAfterCommit { use Queueable; /* ... */ }
 ```
 
-`config/queue.php` 의 연결마다 `'after_commit' => true` 를 켜면 전체에 적용된다. 트랜잭션 자체는 [transactions.md](transactions.md) 에서 다룬다.
+`config/queue.php` 의 연결마다 `'after_commit' => true` 를 켜면 전체에 적용된다. 트랜잭션 자체는 [transactions.md](transactions.md#2-dbtransaction--클로저-한-번으로) 에서 다룬다.
 
 ---
 

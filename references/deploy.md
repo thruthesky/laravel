@@ -48,7 +48,7 @@ APP_DEBUG=false
 
 ### ⚠ APP_DEBUG=true 로 운영하면
 
-Laravel 의 오류 화면은 개발에 아주 편하다 — 대신 **예외 메시지, 파일 경로, 쿼리, 요청 정보**를 보여 준다. 운영에서 켜 두면 공격자에게 설계도를 주는 셈이다. API 의 500 JSON 에도 스택이 실린다([api.md](api.md)). 배포 체크리스트 맨 위에 둔다.
+Laravel 의 오류 화면은 개발에 아주 편하다 — 대신 **예외 메시지, 파일 경로, 쿼리, 요청 정보**를 보여 준다. 운영에서 켜 두면 공격자에게 설계도를 주는 셈이다. API 의 500 JSON 에도 스택이 실린다([api.md](api.md#6-검증-실패404-도-json-으로--accept-헤더)). 배포 체크리스트 맨 위에 둔다.
 
 ---
 
@@ -69,7 +69,7 @@ php artisan key:generate     # .env 의 APP_KEY 를 새로 채운다 — 처음 
 
 그래서 배포 스크립트에 `key:generate` 를 넣지 않는다. 열쇠를 꼭 바꿔야 하면(유출 등) 새 열쇠를 `APP_KEY` 에, 옛 열쇠를 `APP_PREVIOUS_KEYS` 에 두어 옛 값도 읽히게 한다(Laravel 11+, 공식 문서 Encryption → Gracefully Rotating Encryption Keys 로 확인).
 
-비밀번호 해시(`hashed` cast, `Hash::make`)는 APP_KEY 와 **상관없다** — 열쇠를 바꿔도 로그인 비밀번호는 그대로 맞는다([security.md](security.md)).
+비밀번호 해시(`hashed` cast, `Hash::make`)는 APP_KEY 와 **상관없다** — 열쇠를 바꿔도 로그인 비밀번호는 그대로 맞는다([security.md](security.md#7-비밀번호--hash)).
 
 ---
 
@@ -257,7 +257,7 @@ sudo chmod -R ug+rwx storage bootstrap/cache
 
 ### storage:link
 
-업로드한 파일을 URL 로 보여 주려면 `public/storage` → `storage/app/public` 심볼릭 링크가 필요하다. 서버마다 **한 번** `php artisan storage:link`. 링크가 없으면 업로드는 되는데 이미지 주소가 404 다([files-cache.md](files-cache.md)).
+업로드한 파일을 URL 로 보여 주려면 `public/storage` → `storage/app/public` 심볼릭 링크가 필요하다. 서버마다 **한 번** `php artisan storage:link`. 링크가 없으면 업로드는 되는데 이미지 주소가 404 다([files-cache.md](files-cache.md#5-storagelink--공개-url-만들기)).
 
 ---
 
@@ -271,7 +271,7 @@ sudo chmod -R ug+rwx storage bootstrap/cache
 php artisan queue:restart     # 워커들에게 "지금 하던 작업 끝나면 종료" 신호 → Supervisor 등이 새로 띄운다
 ```
 
-워커가 죽으면 다시 띄워 주는 프로세스 관리자(Supervisor, systemd, Docker 의 `restart:` 정책)가 함께 있어야 한다. 큐 자체는 [queues.md](queues.md) 에서 다룬다.
+워커가 죽으면 다시 띄워 주는 프로세스 관리자(Supervisor, systemd, Docker 의 `restart:` 정책)가 함께 있어야 한다. 큐 자체는 [queues.md](queues.md#6-워커--queuework-와-재시작) 에서 다룬다.
 
 ### 스케줄러 — cron 한 줄
 

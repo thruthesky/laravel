@@ -356,7 +356,7 @@ PES 의 관리 기록(`app/Models/AdminLog.php`, [eloquent.md 2절](eloquent.md#
 
 어떤 모델이든 "종류 + 기본 키" 두 칸으로 가리키는 **다형 참조**다. 다만 PES 는 `morphTo()` 관계를 선언하지 않고 테이블 이름을 직접 적는다 — 기록을 **쓰기만** 하고 기록에서 대상 모델을 불러올 일이 적기 때문이다. 불러와야 한다면 `morphTo()` 와 morphMap 으로 옮기는 것이 Laravel 다운 방법이다.
 
-⚠ 다형 관계는 `commentable_id` 에 **외래 키 제약을 걸 수 없다**(가리키는 테이블이 행마다 다르다). 그래서 대상 글을 지워도 DB 가 댓글을 지워 주지 않는다. 모델 이벤트(`deleting`)나 옵저버에서 직접 지운다 — [eloquent-plus.md](eloquent-plus.md) 의 옵저버 절.
+⚠ 다형 관계는 `commentable_id` 에 **외래 키 제약을 걸 수 없다**(가리키는 테이블이 행마다 다르다). 그래서 대상 글을 지워도 DB 가 댓글을 지워 주지 않는다. 모델 이벤트(`deleting`)나 옵저버에서 직접 지운다 — [eloquent-plus.md](eloquent-plus.md#9-옵저버--모델-이벤트를-한-클래스로) 의 옵저버 절.
 
 ---
 
@@ -427,7 +427,7 @@ $posts = Post::query()
 
 순수 SQL 의 `SELECT posts.*, (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comments_count` 를 직접 쓰던 일이다. `withCount` 는 그 하위 쿼리를 관계 정의에서 만들어 준다.
 
-⚠ `comments_count` 는 `withCount` 를 쓴 쿼리에서만 생긴다. 다른 화면에서 `$post->comments_count` 를 부르면 `null` 이다(오류가 아니라 조용히). [eloquent-plus.md](eloquent-plus.md) 의 엄격 모드를 켜면 이런 "없는 속성" 읽기가 예외로 드러난다.
+⚠ `comments_count` 는 `withCount` 를 쓴 쿼리에서만 생긴다. 다른 화면에서 `$post->comments_count` 를 부르면 `null` 이다(오류가 아니라 조용히). [eloquent-plus.md](eloquent-plus.md#5-엄격-모드--조용한-실수를-예외로) 의 엄격 모드를 켜면 이런 "없는 속성" 읽기가 예외로 드러난다.
 
 ---
 

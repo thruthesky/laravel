@@ -261,7 +261,7 @@ RateLimiter::for('login', function (Request $request) {
 Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:login');
 ```
 
-제한을 넘으면 **429 Too Many Requests** 가 나가고 `Retry-After` 헤더가 붙는다. 횟수는 캐시에 저장되므로 운영에서는 여러 서버가 공유하는 캐시(Redis·DB)를 쓴다([files-cache.md](files-cache.md)).
+제한을 넘으면 **429 Too Many Requests** 가 나가고 `Retry-After` 헤더가 붙는다. 횟수는 캐시에 저장되므로 운영에서는 여러 서버가 공유하는 캐시(Redis·DB)를 쓴다([files-cache.md](files-cache.md#8-캐시-드라이버와-키-설계)).
 
 ⚠ IP 만으로 제한하면 한 회사(같은 공인 IP)의 사용자들이 서로를 막는다. 이메일만으로 제한하면 공격자가 남의 계정을 일부러 잠근다. 둘을 조합하는 것이 보통이다.
 
@@ -311,7 +311,7 @@ $request->validate([
 $path = $request->file('photo')->store('photos', 'public');   // photos/aZ3k…9.jpg
 ```
 
-`mimes` 는 파일 **내용**으로 MIME 을 판별하므로 확장자만 바꾼 파일을 거른다. 저장·공개 URL·`storage:link` 는 [files-cache.md](files-cache.md) 에서 다룬다.
+`mimes` 는 파일 **내용**으로 MIME 을 판별하므로 확장자만 바꾼 파일을 거른다. 저장·공개 URL·`storage:link` 는 [files-cache.md](files-cache.md#3-저장하기--storestoreas) 에서 다룬다.
 
 ⚠ SVG 는 이미지지만 `<script>` 를 담을 수 있다. 사용자 업로드에는 허용하지 않거나 정화한다.
 
@@ -333,7 +333,7 @@ $path = $request->file('photo')->store('photos', 'public');   // photos/aZ3k…9
 - **웹 서버의 문서 루트는 `public/`** 이어야 한다. 프로젝트 루트를 문서 루트로 잡으면 `https://…/.env` 로 파일이 그대로 내려받아진다.
 - 운영에서 `php artisan config:cache` 를 쓰면 `.env` 가 설정 캐시에 녹아든다 — 그래서 코드에서 `env()` 를 직접 부르면 안 된다([함정 1](pitfalls.md#1-env-가-null)).
 
-배포 전 점검 목록은 [deploy.md](deploy.md) 에 있다.
+배포 전 점검 목록은 [deploy.md](deploy.md#4-배포-순서-체크리스트) 에 있다.
 
 ---
 

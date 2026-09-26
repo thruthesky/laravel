@@ -168,7 +168,7 @@ DB::afterCommit(fn () => Cache::forget('slots:'.$slot->tutor_id));
 ],
 ```
 
-큐 자체는 [queues.md](queues.md) 에서 다룬다.
+큐 자체는 [queues.md](queues.md#3-잡-만들기와-디스패치) 에서 다룬다.
 
 ---
 

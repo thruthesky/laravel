@@ -99,7 +99,7 @@ $user->toArray();   // [..., 'full_name' => '홍길동']
 $user->append('avatar_url')->toArray();     // 이번 한 번만 더 넣기
 ```
 
-⚠ `$appends` 의 접근자가 관계를 읽으면(`$this->posts->count()`) 모델을 JSON 으로 만들 때마다 관계를 불러와 **목록 JSON 에서 N+1** 이 된다. 개수라면 [withCount](relations.md) 를 쓴다. 내보낼 칸을 세밀하게 정하는 일은 API 리소스([api.md](api.md))가 더 알맞다.
+⚠ `$appends` 의 접근자가 관계를 읽으면(`$this->posts->count()`) 모델을 JSON 으로 만들 때마다 관계를 불러와 **목록 JSON 에서 N+1** 이 된다. 개수라면 [withCount](relations.md#8-관계-집계--withcountwithexistswithsum) 를 쓴다. 내보낼 칸을 세밀하게 정하는 일은 API 리소스([api.md](api.md#5-api-resource--모델을-json-모양으로-바꾸는-클래스))가 더 알맞다.
 
 ---
 
@@ -157,7 +157,7 @@ Route::get('/trash/{post}', [TrashController::class, 'show'])->withTrashed();
 | **unique 제약** | 탈퇴(소프트 삭제)한 이메일로 재가입 → `unique` 위반 | 검증은 `Rule::unique('users')->withoutTrashed()`, DB 는 PostgreSQL 부분 인덱스 `CREATE UNIQUE INDEX … WHERE deleted_at IS NULL` |
 | **자식은 안 지워진다** | 글을 지웠는데 댓글은 그대로 | `cascadeOnDelete()` 는 진짜 DELETE 에서만 동작. 자식도 소프트 삭제하려면 옵저버(9절)에서 처리 |
 | **원시 SQL·쿼리 빌더** | `DB::table('posts')` 로 조회하면 지운 글도 나옴 | 전역 스코프는 Eloquent 에만 걸린다 |
-| **쌓이기만 함** | 휴지통이 무한히 커짐 | `Prunable` 트레이트 + `model:prune` 명령을 스케줄러에 등록 ([queues.md](queues.md)) |
+| **쌓이기만 함** | 휴지통이 무한히 커짐 | `Prunable` 트레이트 + `model:prune` 명령을 스케줄러에 등록 ([queues.md](queues.md#11-스케줄러--서버-cron-한-줄)) |
 
 소프트 삭제는 "되살리기·감사 기록" 이 정말 필요한 테이블에만 쓴다. 모든 테이블에 습관처럼 붙이면 unique·집계·조인마다 `deleted_at` 을 생각해야 한다.
 
@@ -409,7 +409,7 @@ Post::withoutEvents(fn () => $seeder->run());       // 블록 안 전부
 
 ⚠ 옵저버는 **모델 메서드**(`create`·`save`·`update`·`delete`)에서만 실행된다. `Post::where(...)->update()`·`insert`·`upsert`·`DB::table()` 은 모델을 만들지 않으므로 옵저버를 건너뛴다(7절, [pitfalls.md 11번](pitfalls.md#11-완성도-점수가-안-바뀜--모델-이벤트-건너뜀)).
 
-⚠ 트랜잭션 안에서 저장하고 옵저버가 메일·큐 작업을 보내면, 나중에 트랜잭션이 롤백되어도 메일은 이미 나갔다. 커밋 뒤에 실행하려면 옵저버가 `ShouldHandleEventsAfterCommit` 인터페이스를 구현한다 — [transactions.md](transactions.md).
+⚠ 트랜잭션 안에서 저장하고 옵저버가 메일·큐 작업을 보내면, 나중에 트랜잭션이 롤백되어도 메일은 이미 나갔다. 커밋 뒤에 실행하려면 옵저버가 `ShouldHandleEventsAfterCommit` 인터페이스를 구현한다 — [transactions.md](transactions.md#4-커밋-뒤에-할-일--aftercommit).
 
 ---
 
