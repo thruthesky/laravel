@@ -1,6 +1,6 @@
 ---
 name: laravel
-description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치는 Laravel 13 공부 도우미. PES 저장소의 실제 코드(라우트·미들웨어·컨트롤러·FormRequest·Eloquent 모델·Blade·마이그레이션·팩토리·Artisan 명령·Pest 테스트)를 예제로 삼아 기초 암기 → 요청 한 바퀴 따라가기 → 주제별 심화 → 퀴즈·실습 순서로 가르친다. 사용자가 Laravel 을 공부·학습·복습하고 싶다고 할 때, Laravel 개념(요청 흐름, 서비스 컨테이너, Facade, 서비스 프로바이더, config·env, 라우트, 라우트 모델 바인딩, 미들웨어, 검증, 세션 flash, 인증, 정책, Eloquent, 관계, 스코프, casts, 모델 이벤트, Collection, N+1, Blade, 컴포넌트, 슬롯, 마이그레이션, 팩토리, 시더, Artisan, tinker, Pest)을 물을 때, "이 코드가 무슨 뜻이냐"·"왜 이렇게 쓰냐"처럼 PES 코드를 Laravel 관점에서 풀어 달라고 할 때, 암기 카드·퀴즈·연습 문제·공부 순서를 원할 때, 인터넷 튜토리얼(Laravel 8~10)과 이 프로젝트 코드가 달라 헷갈릴 때 반드시 사용한다. 예약·강사 기능을 실제로 구현하는 일은 booking 스킬이 맡는다. Keywords - Laravel, 라라벨, 공부, 학습, 스터디, 기초, 암기, 복습, 퀴즈, 튜토리얼, Eloquent, Blade, Artisan, tinker, route, middleware, migration, facade.
+description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치는 Laravel 13 공부 도우미. PES 저장소의 실제 코드(라우트·미들웨어·컨트롤러·FormRequest·Eloquent 모델·Blade·마이그레이션·팩토리·Artisan 명령·Pest 테스트)를 예제로 삼아 기초 암기 → 요청 한 바퀴 따라가기 → 주제별 심화 → 퀴즈·실습 순서로 가르친다. 사용자가 Laravel 을 공부·학습·복습하고 싶다고 할 때, Laravel 개념(설치·laravel new·composer create-project·명령을 실행할 폴더, 요청 흐름, 서비스 컨테이너, Facade, 서비스 프로바이더, config·env, 라우트, 라우트 모델 바인딩, 미들웨어, 검증, 세션 flash, 인증, 정책, Eloquent, 관계, 스코프, casts, 모델 이벤트, Collection, N+1, Blade, 컴포넌트, 슬롯, 마이그레이션, 팩토리, 시더, Artisan, tinker, Pest)을 물을 때, "이 코드가 무슨 뜻이냐"·"왜 이렇게 쓰냐"처럼 PES 코드를 Laravel 관점에서 풀어 달라고 할 때, 암기 카드·퀴즈·연습 문제·공부 순서를 원할 때, 인터넷 튜토리얼(Laravel 8~10)과 이 프로젝트 코드가 달라 헷갈릴 때 반드시 사용한다. 예약·강사 기능을 실제로 구현하는 일은 booking 스킬이 맡는다. Keywords - Laravel, 라라벨, 공부, 학습, 스터디, 기초, 암기, 복습, 퀴즈, 튜토리얼, Eloquent, Blade, Artisan, tinker, route, middleware, migration, facade.
 ---
 
 # Laravel 공부 — PES 코드로 배우는 Laravel 13
@@ -35,6 +35,7 @@ description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치�
 | 사용자 요청 | 할 일 |
 |---|---|
 | "처음부터", "기초", "뭐부터 외워요?" | [로드맵](#공부-로드맵-7단계) 1단계부터. 먼저 [기초 암기 카드](#기초-암기-카드)를 보여 준다 |
+| "어떻게 설치해요?", "이 명령은 어느 폴더에서?", "무슨 폴더가 생겨요?" | [install.md](references/install.md) |
 | "X 가 뭐예요?" (개념 질문) | 아래 [참조 문서 지도](#참조-문서-지도)에서 해당 문서를 읽고 → 개념 → PES 코드 → 순수 PHP 비교 → 확인 문제 |
 | "이 코드 설명해 주세요" (파일·선택 영역) | 파일을 읽고 줄마다 Laravel 개념 이름을 붙여 설명한다(예: "여기가 로컬 스코프", "여기가 flash 세션"). 관련 참조 문서를 링크 |
 | "요청 따라가기", "흐름이 궁금해요" | [lifecycle.md](references/lifecycle.md) 의 "요청 한 바퀴 따라가기" 절차 |
@@ -49,6 +50,7 @@ description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치�
 
 | 단계 | 주제 | 참조 | 마치면 할 수 있는 것 |
 |---|---|---|---|
+| 0 | 준비 | [install.md](references/install.md) | 연습 프로젝트를 만들고, 명령마다 어느 폴더에서 실행하는지와 무엇이 생기는지 말한다 |
 | 1 | 큰 그림 | [lifecycle.md](references/lifecycle.md) | 요청이 어느 파일들을 거쳐 응답이 되는지 순서대로 말한다. Facade·서비스 컨테이너·config 가 무엇인지 한 문장씩 말한다 |
 | 2 | 라우트 | [routing.md](references/routing.md) | `routes/web.php` 한 줄을 보고 URL·HTTP 메서드·컨트롤러·이름·미들웨어를 읽어 낸다 |
 | 3 | 컨트롤러·검증 | [controllers.md](references/controllers.md) | 폼 하나의 저장 흐름(검증 → 저장 → redirect → flash 메시지)을 설명한다 |
@@ -179,6 +181,10 @@ php artisan make:model Post -mf       # 모델 + 마이그레이션 + 팩토리 
 ## 참조 문서 지도
 
 주제별 문서다. 필요한 문서만 읽는다. 모든 문서는 **핵심 개념 → 순수 PHP 비교 → PES 실제 코드 → 암기 카드** 순서로 되어 있다.
+
+### 0단계 설치 → [references/install.md](references/install.md)
+
+새 Laravel 프로젝트를 만들 때 명령을 어느 폴더에서 실행하고 무엇이 생기는지 다룬다. 골격 만들기(`laravel new`·`composer create-project`)와 실행 환경(호스트 PHP·Sail·직접 쓴 `compose.yaml`)이 서로 다른 층이라는 점, `composer global require laravel/installer` 는 아무 폴더에서나 되고 `laravel new my-app` 은 부모 폴더(`~/apps`)에서 실행해 `~/apps/my-app/` 을 만든다는 점, `laravel: command not found` 일 때 `~/.composer/vendor/bin` 을 PATH 에 넣는 법, 연습 프로젝트를 만든 뒤 생기는 폴더 구조와 설치 중 만들어지는 `vendor/`·`.env`·`APP_KEY`·`database.sqlite`(골격 `composer.json` 의 `post-create-project-cmd`), `php artisan` 은 `artisan` 이 있는 프로젝트 루트에서 실행한다는 점, PES 의 `./:/app` 볼륨과 `WORKDIR /app` 덕분에 `docker compose exec app php artisan` 이 PES 루트에서 도는 이유, PES 안에서 `laravel new` 를 하면 안 되는 이유를 담았다.
 
 ### 1단계 큰 그림 → [references/lifecycle.md](references/lifecycle.md)
 

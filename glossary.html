@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>용어 사전 · Laravel 13 공부</title>
+<meta name="description" content="Laravel 13 을 처음 배우는 PHP 개발자를 위한 용어 사전. 용어마다 쉬운 뜻, 순수 PHP 와의 비교, 예제 코드, 문서의 자세한 설명이 있습니다.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23D62F26'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-weight='900' font-size='20' fill='white'%3EL%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="site/site.css">
+</head>
+<body data-gl="mark">
+
+<main class="wrap">
+  <div class="g-head">
+    <h1>용어 사전</h1>
+    <p>용어마다 쉬운 뜻, <b>순수 PHP 로는</b> 어떻게 하던 일인지, 예제 코드, 문서의 자세한 설명(링크에 마우스를 올리면 미리보기)이 있습니다.
+       본문의 점선 밑줄 단어는 모두 이 사전에서 나옵니다.</p>
+  </div>
+  <div class="g-tools" data-no-gl>
+    <label class="bigsearch">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input id="gq" type="search" autocomplete="off" spellcheck="false" placeholder="용어 거르기 — 이름·뜻·예제 코드까지 찾습니다 (예: 관계, validate, 419)" aria-label="용어 거르기">
+    </label>
+    <div class="g-filters" id="kinds" role="group" aria-label="종류로 거르기"><span class="lbl">종류</span></div>
+    <div class="g-filters" id="stages" role="group" aria-label="단계로 거르기"><span class="lbl">단계</span></div>
+    <p class="g-count" id="gcount" aria-live="polite"></p>
+  </div>
+  <div id="glist"><div class="state">용어 사전을 불러오는 중…</div></div>
+  <div class="g-empty" id="gempty" hidden>맞는 용어가 없습니다. 다른 말로 찾거나, 위쪽 검색(<kbd>⌘</kbd><kbd>K</kbd>)으로 문서 본문을 찾아 보세요.</div>
+</main>
+
+<footer class="foot" data-no-gl>
+  <div class="wrap">
+    <span class="grow">용어 사전 원본은 저장소의 <code>site/glossary.json</code> 입니다.</span>
+    <a href="index.html">← 처음으로</a>
+    <a href="https://github.com/thruthesky/laravel/blob/main/site/glossary.json" target="_blank" rel="noopener">glossary.json ↗</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.7/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+<script src="site/docs.js"></script>
+<script src="site/lib.js"></script>
+<script src="site/popup.js"></script>
+<script src="site/search.js"></script>
+<script src="site/glossary-page.js"></script>
+</body>
+</html>

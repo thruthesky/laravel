@@ -136,6 +136,7 @@ Claude Code 에서는 `/laravel` 로 직접 부를 수도 있습니다. Gemini C
 laravel/
 ├── SKILL.md                  가르치는 규칙, 공부 모드, 7단계 로드맵, 기초 암기 카드, 옛 튜토리얼과의 차이표
 └── references/
+    ├── install.md            0단계 설치 — 명령을 실행할 폴더, 생기는 폴더 구조
     ├── lifecycle.md          1단계 큰 그림 — 요청 흐름·서비스 컨테이너·Facade·config
     ├── routing.md            2단계 라우트·미들웨어
     ├── controllers.md        3단계 컨트롤러·검증·응답·인증·정책

@@ -1,0 +1,62 @@
+/* ------------------------------------------------------------------
+   문서 목록 — 사이트가 읽는 마크다운 파일과 순서
+   새 문서를 references/ 에 넣으면 여기에 한 줄을 더한다.
+   (scripts/check_site.py 가 빠진 문서를 알려 준다)
+   stage: 숫자는 공부 로드맵 단계, 문자열은 단계 밖 문서
+   goal:  SKILL.md "공부 로드맵 7단계" 표의 "마치면 할 수 있는 것"
+   ------------------------------------------------------------------ */
+window.LARAVEL_SITE = {
+  repo: 'https://github.com/thruthesky/laravel',
+  branch: 'main',
+  docs: [
+    { slug: 'skill', path: 'SKILL.md', stage: '개요', short: '스킬 개요',
+      title: 'Laravel 공부 — PES 코드로 배우는 Laravel 13',
+      desc: '가르치는 규칙, 공부 모드, 로드맵, 기초 암기 카드, 옛 튜토리얼과의 차이표' },
+    { slug: 'install', path: 'references/install.md', stage: 0, short: '설치',
+      title: '설치 — 명령을 어디서 실행하고 무엇이 생기나',
+      desc: 'laravel new·composer create-project 를 어느 폴더에서 실행하고 무엇이 생기는지',
+      goal: '연습 프로젝트를 만들고, 명령마다 어느 폴더에서 실행하는지와 무엇이 생기는지 말한다' },
+    { slug: 'lifecycle', path: 'references/lifecycle.md', stage: 1, short: '큰 그림', star: true,
+      title: '큰 그림 — 요청 흐름·컨테이너·Facade·설정',
+      desc: '요청 하나가 public/index.php 에서 응답이 되기까지. 서비스 컨테이너·Facade·config',
+      goal: '요청이 어느 파일들을 거쳐 응답이 되는지 순서대로 말한다. Facade·서비스 컨테이너·config 가 무엇인지 한 문장씩 말한다' },
+    { slug: 'routing', path: 'references/routing.md', stage: 2, short: '라우트',
+      title: '라우트와 미들웨어',
+      desc: 'URL·HTTP 메서드를 컨트롤러에 잇는 법, 라우트 이름, 모델 바인딩, 미들웨어',
+      goal: 'routes/web.php 한 줄을 보고 URL·HTTP 메서드·컨트롤러·이름·미들웨어를 읽어 낸다' },
+    { slug: 'controllers', path: 'references/controllers.md', stage: 3, short: '컨트롤러·검증',
+      title: '컨트롤러·요청·검증·응답·인증',
+      desc: '$_POST·header() 대신 쓰는 것 — 검증, FormRequest, redirect·flash, 로그인, 정책',
+      goal: '폼 하나의 저장 흐름(검증 → 저장 → redirect → flash 메시지)을 설명한다' },
+    { slug: 'eloquent', path: 'references/eloquent.md', stage: 4, short: 'Eloquent', star: true,
+      title: 'Eloquent (ORM)',
+      desc: '모델·조회·저장, 대량 할당, casts, 관계와 괄호 규칙, N+1, 스코프, 이벤트, Collection',
+      goal: '관계·스코프·casts 를 읽고, $user->tutorSlots() 와 $user->tutorSlots 의 차이를 말한다. 가장 오래 걸리는 단계' },
+    { slug: 'blade', path: 'references/blade.md', stage: 5, short: 'Blade',
+      title: 'Blade 템플릿',
+      desc: '{{ }} 출력, 조건·반복, 레이아웃 상속, 컴포넌트·슬롯, 폼 지시어, 번역',
+      goal: '레이아웃 상속·컴포넌트·폼 지시어(@csrf·@method·@error)를 읽는다' },
+    { slug: 'database', path: 'references/database.md', stage: 6, short: 'DB 구조',
+      title: '마이그레이션·팩토리·시더',
+      desc: '테이블 구조의 git — 마이그레이션, 컬럼 타입, CHECK 제약, 팩토리, 시더',
+      goal: '마이그레이션 하나를 읽고 만들어질 테이블을 그린다. 팩토리로 테스트 데이터를 만든다' },
+    { slug: 'testing', path: 'references/testing.md', stage: 7, short: '테스트',
+      title: 'Pest 테스트',
+      desc: 'RefreshDatabase, HTTP 테스트, 응답 검사, expect(), 데이터셋',
+      goal: 'PES 의 Pest 테스트 하나를 읽고 무엇을 검사하는지 말한다' },
+    { slug: 'artisan', path: 'references/artisan.md', stage: '수시', short: 'Artisan',
+      title: 'Artisan 명령과 tinker',
+      desc: '매일 쓰는 명령, 스스로 조사하는 명령, make:*, 캐시, tinker, 직접 만든 명령',
+      goal: 'route:list·tinker·model:show 로 스스로 조사한다' },
+    { slug: 'pitfalls', path: 'references/pitfalls.md', stage: '수시', short: '함정 12개', star: true,
+      title: 'PHP 전문가가 Laravel 에서 빠지는 함정 12개',
+      desc: '증상 → 원인 → 올바른 코드. env() null, 대량 할당, N+1, 419, 캐시 …',
+      goal: '함정을 피한다' },
+    { slug: 'exercises', path: 'references/exercises.md', stage: '실습', short: '퀴즈·실습',
+      title: '퀴즈·실습',
+      desc: '단계별 문제 은행(정답·해설), tinker 조회 실습, 연습 프로젝트 "미니 게시판"' },
+    { slug: 'readme', path: 'README.md', stage: '설치', short: '스킬 설치',
+      title: '스킬 설치·사용법',
+      desc: 'Claude Code·Codex·Gemini CLI·Copilot·Cursor 에 이 스킬을 설치하는 법' }
+  ]
+};
