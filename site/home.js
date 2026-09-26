@@ -38,7 +38,7 @@
       if (!box) return;
       var el = document.createElement('div');
       var misc = typeof d.stage !== 'number';
-      el.className = 'stage' + (misc ? ' misc' : '');
+      el.className = 'stage' + (misc ? ' misc' : '') + (L.done.get(d.slug) ? ' done' : '');
       el.innerHTML =
         (d.star ? '<span class="star">★ 핵심</span>' : '') +
         '<div class="top-row"><span class="num">' + L.esc(d.stage === '심화' ? '◆' : d.stage) + '</span>' +
@@ -143,9 +143,17 @@
       box.innerHTML =
         '<span><b>' + L.docs.length + '</b>편 문서</span>' +
         (s.lines ? '<span><b>' + s.lines.toLocaleString() + '</b>줄</span><span><b>' + s.secs + '</b>개 절</span>' : '') +
-        '<span><b>' + L.gloss.list.length + '</b>개 용어 팝업</span>';
+        '<span><b>' + L.gloss.list.length + '</b>개 용어 팝업</span>' +
+        '<span><b>' + L.notes.list.length + '</b>개 코드 줄 설명</span>' + progress();
+    }
+    // 진도 — 로드맵 8단계(0~7) 중 "마쳤어요" 표시한 수
+    function progress() {
+      var st = L.docs.filter(function (d) { return typeof d.stage === 'number'; });
+      var n = st.filter(function (d) { return L.done.get(d.slug); }).length;
+      return n ? '<span class="prog"><b>' + n + '/' + st.length + '</b>단계 마침</span>' : '';
     }
     paint();
+    L.notes.whenReady(paint);
     L.search.build().then(paint);
   }
 })();

@@ -235,6 +235,12 @@
   };
   function safeDecode(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
 
+  /* ── 진도 — "마쳤어요" 표시(이 브라우저에만 저장) ─────── */
+  L.done = {
+    get: function (slug) { return L.store.get('lv-done-' + slug, '') === '1'; },
+    set: function (slug, on) { L.store.set('lv-done-' + slug, on ? '1' : ''); }
+  };
+
   /* ── 퀴즈·암기 카드 — 답 칸을 가린다 ─────────────────── */
   // md 원문은 그대로 둔다(AI 가 채점에 쓴다). 사람이 보는 화면에서만 마지막 열이 "답"인 표를 가린다
   var ANSWER_HEAD = /^(답|정답|정답·해설)$/;
@@ -331,7 +337,7 @@
     if (box && !box.querySelector('.cn-hint')) {
       var hint = document.createElement('span');
       hint.className = 'cn-hint'; hint.setAttribute('data-no-gl', '');
-      hint.textContent = '번호에 올리면 줄 설명 · ' + hits.length + '개';
+      hint.textContent = (L.hoverable ? '번호에 올리면' : '번호를 누르면') + ' 줄 설명 · ' + hits.length + '개';
       box.appendChild(hint);
       box.classList.add('has-notes');
     }

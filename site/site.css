@@ -737,3 +737,13 @@ table.quiz td:first-child { white-space: nowrap; }
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
   .pop { transform: none; }
 }
+
+/* ── 진도 ─────────────────────────────────────────────────── */
+.done-chk { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--green); cursor: pointer; }
+.done-chk input { accent-color: var(--green); width: 16px; height: 16px; }
+.side .d.done .n { background: var(--green); color: #fff; }
+.side .d.done > span:last-child::after { content: " ✓"; color: var(--green); font-weight: 800; }
+.stage.done { border-color: color-mix(in srgb, var(--green) 45%, var(--rule)); }
+.stage.done .num { background: var(--green); color: #fff; }
+.stage.done h3 a::after { content: " ✓"; color: var(--green); }
+.stats .prog b { color: var(--green); }

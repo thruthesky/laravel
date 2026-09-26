@@ -26,7 +26,7 @@
     h += '<div class="lbl">' + g[0] + '</div>';
     L.docs.filter(g[1]).forEach(function (x) {
       var n = typeof x.stage === 'number' ? x.stage : (BADGE[x.slug] || (x.stage === '심화' ? '◆' : '·'));
-      h += '<a class="d' + (x === d ? ' cur" aria-current="page' : '') + '" href="doc.html?d=' + x.slug + '">' +
+      h += '<a class="d' + (L.done.get(x.slug) ? ' done' : '') + (x === d ? ' cur" aria-current="page' : '') + '" href="doc.html?d=' + x.slug + '">' +
         '<span class="n">' + L.esc(n) + '</span><span>' + L.esc(x.short) + '</span></a>';
       if (x === d) h += '<nav class="toc" id="toc" aria-label="이 문서의 목차"></nav>';
     });
@@ -66,8 +66,17 @@
     if (h1 && d.goal) {
       var lead = document.createElement('div');
       lead.className = 'doc-lead';
-      lead.innerHTML = '<b>' + (typeof d.stage === 'number' ? '이 단계를 마치면' : '이 문서로') + '</b> — ' + L.esc(d.goal);
+      lead.innerHTML = '<b>' + (typeof d.stage === 'number' ? '이 단계를 마치면' : '이 문서로') + '</b> — ' + L.esc(d.goal) +
+        '<label class="done-chk" data-no-gl><input type="checkbox"> 말로 설명할 수 있어요 — 마쳤어요</label>';
       h1.parentNode.insertBefore(lead, h1.nextSibling);
+      // 진도 — 체크하면 왼쪽 목록과 홈 로드맵에 표시된다(이 브라우저에만 저장)
+      var chk = lead.querySelector('input');
+      chk.checked = L.done.get(slug);
+      chk.addEventListener('change', function () {
+        L.done.set(slug, chk.checked);
+        var me = side.querySelector('a.d.cur');
+        if (me) me.classList.toggle('done', chk.checked);
+      });
     }
 
     // 문서 안의 "목차" 절은 넓은 화면에서 숨긴다(왼쪽 목록과 겹친다)
