@@ -134,7 +134,7 @@ Claude Code 에서는 `/laravel` 로 직접 부를 수도 있습니다. Gemini C
 
 ```
 laravel/
-├── SKILL.md                  가르치는 규칙, 공부 모드, 7단계 로드맵, 기초 암기 카드, 옛 튜토리얼과의 차이표
+├── SKILL.md                  가르치는 규칙, 공부 모드, 7단계 로드맵, 기초 암기 카드, 옛 튜토리얼과의 차이표, 심화 과정
 └── references/
     ├── install.md            0단계 설치 — 명령을 실행할 폴더, 생기는 폴더 구조
     ├── lifecycle.md          1단계 큰 그림 — 요청 흐름·서비스 컨테이너·Facade·config
@@ -146,5 +146,16 @@ laravel/
     ├── testing.md            7단계 Pest 테스트
     ├── artisan.md            Artisan 명령·tinker
     ├── pitfalls.md           PHP 전문가가 빠지는 함정 12개
-    └── exercises.md          퀴즈 문제 은행·실습 과제
+    ├── exercises.md          퀴즈 문제 은행(7단계 + 심화)·실습 과제
+    │
+    │   심화 — 7단계를 마친 뒤 실무 주제
+    ├── relations.md          관계 더 알기 — 다대다·피벗·관계 집계·다형
+    ├── eloquent-plus.md      Eloquent 더 알기 — 접근자·소프트 삭제·전역 스코프·엄격 모드·대량 처리
+    ├── transactions.md       트랜잭션과 데이터 무결성 — DB::transaction·잠금·경쟁 조건
+    ├── files-cache.md        파일 업로드·저장소와 캐시
+    ├── queues.md             큐·잡·이벤트·메일·알림·스케줄러
+    ├── api.md                JSON API — api 라우트·API Resource·Sanctum
+    ├── security.md           보안 — Laravel 이 막아 주는 것과 내가 막아야 할 것
+    ├── debugging.md          디버깅·로그·예외 처리
+    └── deploy.md             배포 — 로컬에서 운영 서버로
 ```

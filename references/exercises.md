@@ -109,6 +109,17 @@
 | R-5 | `Post::whereHas('comments', fn ($q) => $q->where('approved', true))->with('comments')->get()` 에서 `$post->comments` 는 승인된 댓글만인가? | 아니다. 거르기와 로딩은 별개라 모든 댓글이 붙는다. 같은 조건이면 `withWhereHas()` 를 쓴다 |
 | R-6 | PES 의 `AdminLog` 는 `subject_type`·`subject_id` 를 쓴다. Laravel 의 어떤 개념과 같고, 무엇이 다른가? | 다형 참조와 같은 생각이다. 다만 `morphTo()` 관계를 선언하지 않고 `getTable()` 로 테이블 이름을 직접 적는다(쓰기 위주라서) |
 
+### 심화 — Eloquent 더 알기 ([eloquent-plus.md](eloquent-plus.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| E-1 | `fullName()` 접근자를 만들었다. `User::orderBy('full_name')->get()` 은 동작하나? | 안 된다. 접근자는 PHP 에만 있는 값이라 SQL 에는 `full_name` 칸이 없다. DB 칸이나 SQL 식으로 정렬한다 |
+| E-2 | 소프트 삭제한 회원의 이메일로 재가입하면 unique 오류가 난다. 검증과 DB 에서 각각 어떻게 푸나? | 검증은 `Rule::unique('users')->withoutTrashed()`, DB 는 PostgreSQL 부분 인덱스 `CREATE UNIQUE INDEX … WHERE deleted_at IS NULL` |
+| E-3 | `Model::shouldBeStrict(! $this->app->isProduction())` 은 어디에 두고, 무엇을 예외로 바꾸나? | `AppServiceProvider::boot()`. 지연 로딩(N+1), fillable 에 없는 칸 버림, 없는 속성 읽기 |
+| E-4 | `status = 'draft'` 인 글을 `chunk(500)` 으로 돌며 `archived` 로 바꿨더니 절반쯤이 그대로다. 왜이고 무엇으로 바꾸나? | `chunk` 는 OFFSET 으로 다음 묶음을 구하는데, 조건에서 빠진 행 때문에 OFFSET 이 밀려 행을 건너뛴다. `chunkById()` 를 쓴다 |
+| E-5 | `Product::upsert(...)` 로 가격을 고쳤는데 옵저버의 `updated()` 가 실행되지 않았다. 왜인가? | `upsert`·`insert`·쿼리 빌더 `update()` 는 모델을 만들지 않아 모델 이벤트·옵저버를 건너뛴다 |
+| E-6 | `$post->user == $request->user()` 가 같은 사람인데도 `false` 가 나올 수 있는 이유와 올바른 비교는? | `==` 는 모든 속성을 비교하므로 한쪽만 관계를 불러왔거나 값이 다르면 `false`. `$post->user->is($request->user())` 로 기본 키를 비교한다 |
+
 ### 심화 — 트랜잭션 ([transactions.md](transactions.md))
 
 | # | 문제 | 정답·해설 |
@@ -120,6 +131,50 @@
 | T-5 | 가입 폼에 `Rule::unique('users', 'email')` 검증이 있는데도 같은 이메일 계정이 두 개 생겼다. 왜이며, 무엇을 더해야 하나? | 동시 요청은 둘 다 검증 시점에 "없음"을 보고 통과한다(경쟁 조건). DB 에 `unique('email')` 제약을 걸어 두 번째 INSERT 를 DB 가 거절하게 한다(`UniqueConstraintViolationException`) |
 | T-6 | `$post->views++; $post->save();` 와 `$post->increment('views');` 의 차이는? | 앞은 PHP 가 읽은 값에 1 을 더해 **덮어쓴다** → 동시 요청이면 증가가 사라진다. 뒤는 `UPDATE … SET views = views + 1` 로 **DB 가 더한다**(원자적) |
 
+### 심화 — 파일·캐시 ([files-cache.md](files-cache.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| F-1 | 업로드 파일을 저장할 때 `getClientOriginalExtension()` 으로 이름을 지으면 무엇이 문제인가? 무엇을 대신 쓰나? | 사용자가 보낸 값이라 `.jpg` 로 이름만 바꾼 PHP 파일도 통과한다. `store()`(내부에서 `hashName()`)나 내용 기반 `extension()` 을 쓰고, 검증은 `mimes`·`image` 로 한다 |
+| F-2 | `'photo' => ['required', 'image', 'max:2048']` 의 `2048` 단위는? 2MB 이하 사진이 "파일이 비었다"며 실패한다면 먼저 볼 곳은? | 킬로바이트(2MB). `php.ini` 의 `upload_max_filesize`·`post_max_size` — PHP 가 Laravel 에 오기 전에 버렸을 수 있다 |
+| F-3 | `store('avatars', 'public')` 로 저장했는데 `/storage/avatars/…` 가 404 다. 원인과 해결은? | `public/storage` 심볼릭 링크가 없다. `php artisan storage:link`. 링크는 git 에 없으므로 새 서버·컨테이너마다 만든다 |
+| F-4 | DB 에 `https://example.com/storage/avatars/x.jpg` 전체 URL 을 저장하면 안 되는 이유는? | 도메인·디스크(S3)가 바뀌면 전부 틀린 값이 된다. 디스크 안 경로(`avatars/x.jpg`)만 저장하고 `Storage::disk(...)->url()` 로 만든다 |
+| F-5 | `Cache::remember("dashboard", 300, fn () => $user->stats())` 의 버그는? | 키에 사용자가 없어 첫 사용자의 값이 모두에게 보인다. `"dashboard.user.{$user->id}"` 처럼 값이 달라지는 조건을 키에 넣는다 |
+| F-6 | 강사 프로필을 `TutorProfile::where(...)->update([...])` 로 고쳤더니 캐시된 카드가 안 바뀐다. 왜인가? | 캐시를 모델 이벤트(`saved`)에서 지우는데, 쿼리 빌더 `update()` 는 모델 이벤트를 건너뛴다. 모델을 불러 `save()` 하거나 직접 `Cache::forget()` 한다 |
+
+### 심화 — 큐·이벤트·메일 ([queues.md](queues.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| Q-1 | `.env` 가 `QUEUE_CONNECTION=sync` 다. `SendWelcomeMail::dispatch($user)` 뒤 응답이 3초 늦다. 왜인가? | `sync` 는 큐가 아니라 **그 자리에서 바로 실행**이다. `database`(또는 `redis`)로 바꾸고 `queue:work` 워커를 띄워야 응답이 먼저 나간다 |
+| Q-2 | 잡 클래스의 `handle()` 을 고쳐 배포했는데 운영에서 옛 동작 그대로다. 원인과 조치는? | `queue:work` 워커는 앱을 한 번 부팅해 **옛 코드를 메모리에 들고** 있다. `php artisan queue:restart` 로 종료 신호를 보내고, Supervisor·Docker 가 새 코드로 다시 띄운다 |
+| Q-3 | 잡에 `User $user` 를 넘겼다. 워커 실행 전에 사용자가 이름을 바꿨다면 잡은 어느 이름을 쓰나? 그 이유는? | **바뀐 이름.** `SerializesModels` 가 모델을 클래스 + id 로만 저장하고 워커가 꺼낼 때 DB 에서 다시 조회하기 때문이다. 옛 값이 필요하면 따로 인자로 넘긴다 |
+| Q-4 | `DB::transaction()` 안에서 `SendReceipt::dispatch($order)` 를 했더니 가끔 `ModelNotFoundException` 이 난다. 왜이고 어떻게 고치나? | 워커가 **커밋 전에** 잡을 꺼내면 다른 연결에서는 주문 행이 아직 보이지 않는다. `->afterCommit()` 을 붙이거나 잡에 `ShouldQueueAfterCommit` 을 구현한다 |
+| Q-5 | 새 리스너 `SendOrderMail` 을 `app/Listeners` 에 만들었다. `EventServiceProvider` 에 등록해야 하나? | 필요 없다. Laravel 11~13 은 **이벤트 자동 발견**으로 `handle(OrderPlaced $event)` 의 타입을 읽어 연결한다. `php artisan event:list` 로 확인한다 |
+| Q-6 | 정기 작업을 하나 더 만들었다. 서버 crontab 에 줄을 추가해야 하나? 테스트에서 메일이 실제로 나갔는지 대신 확인하는 법은? | crontab 은 `* * * * * php artisan schedule:run` **한 줄뿐**이고, 작업은 `routes/console.php` 에 `Schedule::command(...)` 로 더한다. 메일은 `Mail::fake()` 뒤 `Mail::assertSent(WelcomeMail::class)` (큐로 보냈으면 `assertQueued`) |
+
+### 심화 — JSON API ([api.md](api.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| A-1 | 컨트롤러에서 `return Post::latest()->get();` 을 하면 응답은 무엇이고, 공개 API 에서 이렇게 두면 무엇이 위험한가? | 자동으로 JSON 배열(200). 테이블의 모든 칸이 나가므로 나중에 추가한 내부 칸까지 새어 나간다 → API Resource 로 칸을 고른다 |
+| A-2 | `Route::resource` 대신 `Route::apiResource` 를 쓰는 이유는? 빠지는 두 메서드는? | API 는 HTML 입력 폼을 보여 주지 않으므로 화면용 `create`·`edit` 가 필요 없다 |
+| A-3 | 모바일 앱이 `/api/posts` 에 빈 제목을 POST 했더니 422 가 아니라 302 가 왔다. 원인과 해결 두 가지는? | `Accept: application/json` 헤더가 없어 폼 요청으로 봤다. 앱이 헤더를 보내거나, 서버가 `shouldRenderJsonWhen(fn ($r) => $r->is('api/*') …)` 로 api 경로를 무조건 JSON 으로 정한다(PES 방식) |
+| A-4 | Resource 에서 `'author' => new UserResource($this->user)` 대신 `$this->whenLoaded('user')` 를 쓰는 이유는? | 목록에서 행마다 user 쿼리가 나가는 N+1 을 막는다. 컨트롤러가 `with('user')` 했을 때만 실린다 |
+| A-5 | 토큰 없이 부르면 나오는 코드와, 남의 글을 지우려 하면 나오는 코드는? 차이는? | 401(누구인지 모름 — 다시 로그인하면 풀림) / 403(누구인지 알지만 권한 없음 — 다시 로그인해도 안 됨) |
+| A-6 | `createToken()` 으로 발급한 토큰을 나중에 DB 에서 다시 꺼내 앱에 줄 수 있나? | 없다. DB 에는 해시만 저장되고 평문(`plainTextToken`)은 발급 순간에만 볼 수 있다. 잃으면 새로 발급한다 |
+
+### 심화 — 보안 ([security.md](security.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| S-1 | `<a href="{{ $user->homepage }}">` 는 `{{ }}` 로 이스케이프했으니 안전한가? | 아니다. `javascript:alert(1)` 은 이스케이프해도 실행된다. 저장할 때 `url:http,https` 규칙으로 스킴을 제한한다 |
+| S-2 | Laravel 12 프로젝트에서 결제 웹훅 주소를 CSRF 검사에서 빼려고 `app/Http/Middleware/VerifyCsrfToken.php` 를 찾았는데 없다. 어디에 적나? | `bootstrap/app.php` 의 `->withMiddleware()` 안에서 `$middleware->validateCsrfTokens(except: ['webhooks/…'])`. 그 주소는 웹훅 서명을 직접 검증한다 |
+| S-3 | `Post::orderBy($request->input('sort'))` 는 쿼리 빌더라 바인딩되니 안전한가? | 아니다. PDO 는 **값**만 바인딩하고 칸 이름은 바인딩하지 못한다. 허용 목록(`in_array(..., [...], true)`)으로 거른 값만 넣는다 |
+| S-4 | `User` 에 `#[Fillable]` 이 있는데도 `$user->update($request->validated())` 를 권하는 이유는? | 이중 방어다. `validated()` 는 검증 규칙에 적힌 키만 돌려주므로, Fillable 설정 실수·`$guarded = []`·`forceFill` 같은 경우에도 공격자가 끼워 넣은 칸이 들어가지 않는다 |
+| S-5 | 로그인한 사용자가 주소의 id 만 바꿔 남의 글 수정 화면을 열었다. `auth` 미들웨어가 있는데 왜 막지 못했고, 고치는 두 방법은? | `auth` 는 로그인 여부만 본다(IDOR). ① 관계로 찾기 `$request->user()->posts()->findOrFail($id)` ② `Gate::authorize('update', $post)` 정책 |
+| S-6 | 운영 서버의 `APP_KEY` 가 유출돼 새로 바꿨더니 모든 사용자가 로그아웃되고 암호화 칸이 안 읽힌다. 미리 했어야 할 일은? | 옛 키를 `APP_PREVIOUS_KEYS` 에 적어 두면 복호화할 때 옛 키로도 시도한다. 새로 암호화하는 값은 새 키를 쓴다 |
+
 ### 심화 — 디버깅·로그·예외 ([debugging.md](debugging.md))
 
 | # | 문제 | 정답·해설 |
@@ -130,6 +185,17 @@
 | D-4 | Laravel 11+ 에서 옛 `app/Exceptions/Handler.php` 의 역할은 어디로 갔나? PES 는 거기서 무엇을 설정하나? | `bootstrap/app.php` 의 `withExceptions()`. PES 는 `shouldRenderJsonWhen` 으로 `api/*` 이거나 JSON 을 원하는 요청의 오류를 JSON 으로 그린다 |
 | D-5 | 외부 환율 API 가 실패해도 페이지는 떠야 한다. 예외를 기록하고 기본값으로 계속 가는 한 줄은? | `rescue(fn () => ExchangeApi::fetch(), config('pay.default_rate'))` — 빈 `catch` 로 삼키지 않는다 |
 | D-6 | 운영 서버에서 `APP_DEBUG=true` 면 무엇이 위험한가? | 오류 화면에 스택 트레이스·환경 변수·DB 정보·코드 경로가 드러날 수 있다. 운영은 반드시 `false` |
+
+### 심화 — 배포 ([deploy.md](deploy.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| P-1 | 운영 `.env` 에서 `APP_DEBUG=true` 로 두면 무엇이 문제인가? | 예외가 나면 코드·파일 경로·쿼리·설정이 담긴 오류 화면(API 면 스택 JSON)이 사용자에게 보인다. 운영은 `false` |
+| P-2 | 배포 스크립트에 `php artisan key:generate` 를 넣으면 무슨 일이 생기나? | 배포마다 APP_KEY 가 바뀌어 모든 사용자가 로그아웃되고, `encrypted` 로 저장한 값을 복호화할 수 없다 |
+| P-3 | 서버에서 `.env` 의 메일 설정을 고쳤는데 반영이 안 된다. 왜이고 어떻게 하나? | `optimize`(config:cache)로 굳힌 설정 파일이 옛 값을 들고 있다. `php artisan optimize` 를 다시 실행한다 |
+| P-4 | 운영에서 `php artisan migrate` 대신 `migrate --force` 를 쓰는 이유는? 대신 절대 쓰면 안 되는 명령은? | production 에서 뜨는 확인 질문을 스크립트가 대답할 수 없어서. `migrate:fresh` 는 데이터를 전부 지우므로 금지 |
+| P-5 | 새 코드를 배포했는데 이메일 발송(큐 작업)만 옛 동작을 한다. 원인과 명령은? | 큐 워커가 옛 코드를 메모리에 들고 계속 돈다. `php artisan queue:restart` (PES 는 queue 컨테이너 재시작) |
+| P-6 | 웹 서버 문서 루트를 프로젝트 루트로 잡으면 무엇이 열리나? | `https://사이트/.env` 등 — DB 비밀번호·APP_KEY 가 URL 로 노출된다. 문서 루트는 `public/` |
 
 ---
 

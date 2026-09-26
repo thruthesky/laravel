@@ -313,5 +313,390 @@
   "slug": "debugging",
   "match": "php artisan vendor:publish --tag=laravel-errors",
   "note": "Laravel 기본 오류 화면을 `resources/views/errors/` 로 복사해 온다. 복사한 파일을 고쳐 쓴다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "get: fn (mixed $value, array $attributes) => $attributes['last_name'].$attributes['first_name'],",
+  "note": "`get` 클로저의 두 번째 인자는 **모든 칸의 배열**이다. DB 에 없는 계산 값(성+이름)은 이것으로 만든다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "set: fn (string $value) => strtolower(trim($value)),   // 저장 전에 정리",
+  "note": "변경자 — 대입하는 순간 값을 가공한다. `$user->email = ' A@B.com '` 이 DB 에는 `a@b.com` 으로 들어간다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "$builder->whereNotNull('published_at')->where('published_at', '<=', now());",
+  "note": "이 모델의 **모든** Eloquent 조회에 자동으로 붙는 WHERE 다. 관리 화면에서는 `withoutGlobalScope` 로 꺼야 한다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "#[ScopedBy([PublishedScope::class])]          // ① 속성으로",
+  "note": "PHP 속성으로 전역 스코프를 붙인다. `booted()` 안의 `addGlobalScope` 와 같은 효과다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "Model::shouldBeStrict(! $this->app->isProduction());",
+  "note": "운영이 **아닐 때만** 엄격 모드를 켠다. N+1·fillable 버림·없는 속성 읽기가 로컬에서 바로 예외가 된다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "->chunkById(500, function ($posts) {",
+  "note": "`id > 마지막 id` 로 다음 묶음을 가져온다. 거르는 칸(`status`)을 고치며 돌아도 행을 건너뛰지 않는다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "uniqueBy: ['sku'],            // 충돌 판정 칸 — DB 에 unique 인덱스가 있어야 한다",
+  "note": "이 칸 값이 같으면 \"이미 있다\" 로 보고 UPDATE 한다. PostgreSQL 의 `ON CONFLICT (sku)` 가 된다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "protected $touches = ['post'];    // 댓글 저장 → posts.updated_at = now()",
+  "note": "댓글이 저장될 때 `post` 관계의 `updated_at` 도 갱신한다. 최근 활동순 정렬이나 캐시 무효화에 쓴다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "$post->slug ??= Str::slug($post->title);    // 저장 전에 채우기",
+  "note": "`creating` 은 INSERT **전**에 실행되므로 여기서 칸을 채우면 함께 저장된다. `??=` 는 비어 있을 때만 넣는다."
+ },
+ {
+  "slug": "eloquent-plus",
+  "match": "$post->comments()->delete();                // 다형 관계는 FK 제약이 없으니 직접",
+  "note": "다형 댓글은 DB 가 연쇄 삭제해 주지 않으므로 `deleted` 이벤트에서 직접 지운다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "move_uploaded_file($_FILES['photo']['tmp_name']",
+  "note": "순수 PHP 는 임시 파일을 직접 옮긴다. 이름·폴더·충돌 처리를 모두 스스로 해야 하고, 사용자가 보낸 확장자를 믿기 쉽다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "// \"avatars/무작위이름.jpg\"",
+  "note": "`store()` 는 이름을 `hashName()` 으로 짓고 **디스크 안 상대 경로**를 돌려준다. DB 에는 이 경로만 저장한다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "'dimensions:min_width=200,min_height=200'",
+  "note": "이미지 가로·세로 크기 규칙. 너무 작은 프로필 사진을 막는다. `max:2048` 의 단위는 킬로바이트(2MB)다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "File::types(['pdf', 'docx'])->max(5 * 1024)",
+  "note": "규칙 객체 문법. 문자열 `'mimes:pdf,docx|max:5120'` 과 같은 뜻이다. `max()` 단위도 KB 라서 5MB 는 `5 * 1024`."
+ },
+ {
+  "slug": "files-cache",
+  "match": "\"user-{$user->id}.jpg\"",
+  "note": "`storeAs()` 는 이름을 직접 정한다. 같은 이름이 있으면 **덮어쓰므로** 사용자당 파일 하나일 때만 쓴다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "$user->forceFill(['avatar_path' => $path])->save();",
+  "note": "전체 URL 이 아니라 디스크 안 경로를 저장한다. 디스크를 S3 로 옮겨도 DB 값을 고칠 필요가 없다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "$disk->url('avatars/x.jpg');",
+  "note": "`public` 디스크의 공개 URL 을 만든다. `storage:link` 가 없으면 이 URL 은 404 다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "Storage::disk('local')->download(",
+  "note": "`local` 디스크 파일에는 URL 이 없다. 컨트롤러가 권한을 검사한 뒤 두 번째 인자의 이름으로 내려준다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "Storage::disk('public')->delete($old);",
+  "note": "새 파일 저장과 DB 반영이 끝난 **뒤에** 옛 파일을 지운다. 순서가 바뀌면 저장 실패 때 사진이 사라진다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "Cache::remember('tutors.top'",
+  "note": "키가 있으면 꺼내고, 없으면 함수를 실행해 10분 저장한 뒤 돌려준다. 순수 PHP 의 파일 캐시 블록 전체가 이 한 줄이다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "Cache::lock(\"payout.{$tutorId}\", 10);",
+  "note": "10초 뒤 자동으로 풀리는 잠금. 프로세스가 죽어도 영원히 잠기지 않는다. 먼저 `get()` 에 성공한 요청만 일한다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "->block(5, fn () => 예약하기($slotId));",
+  "note": "잠금을 최대 5초 기다린다. 끝내 못 잡으면 `LockTimeoutException` 이 난다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "Cache::tags(['tutors'])->flush();",
+  "note": "`tutors` 태그가 붙은 항목만 지운다. `file`·`database` 드라이버에서는 예외가 나므로 운영과 로컬의 드라이버를 맞춘다."
+ },
+ {
+  "slug": "files-cache",
+  "match": "static::saved(fn (TutorProfile $p) => Cache::forget",
+  "note": "저장될 때마다 그 강사의 캐시를 지운다. 쿼리 빌더 `update()` 는 이 이벤트를 건너뛰므로 캐시가 안 지워진다."
+ },
+ {
+  "slug": "queues",
+  "match": "fastcgi_finish_request();",
+  "note": "PHP-FPM 에서만 되는 함수다. 응답은 먼저 나가지만 같은 프로세스가 계속 일하므로, 실패해도 재시도·기록이 없고 FPM 작업자 하나를 붙잡고 있다. 큐는 이 일을 다른 프로세스(워커)에 넘긴다."
+ },
+ {
+  "slug": "queues",
+  "match": "use Queueable;   // dispatch()",
+  "note": "Laravel 11 이후 `make:job` 이 만드는 잡은 이 트레이트 하나로 Dispatchable·InteractsWithQueue·Queueable·SerializesModels 를 모두 받는다. 옛 튜토리얼에서 `use` 네 줄이 보이는 이유다."
+ },
+ {
+  "slug": "queues",
+  "match": "// 생성자 인자 = 잡에 실려 가는 데이터",
+  "note": "생성자 속성 승격(PHP 8.0)이다. 이 속성들이 직렬화되어 jobs 테이블의 payload 에 들어간다. 모델은 SerializesModels 덕분에 id 만 저장된다(5절)."
+ },
+ {
+  "slug": "queues",
+  "match": "->onQueue('mail');",
+  "note": "큐 이름은 '줄'이다. 워커를 `--queue=mail,default` 로 띄우면 mail 줄을 먼저 비운다. 이름만 바꿔서는 아무 일도 없다 — 그 줄을 보는 워커가 있어야 한다."
+ },
+ {
+  "slug": "queues",
+  "match": "public $backoff = [10, 60, 300];",
+  "note": "배열이면 회차별 대기 초다. 정수 하나(`public $backoff = 30;`)면 매번 같은 간격. 외부 API 가 잠깐 죽었을 때 점점 길게 기다리는 편이 성공률이 높다."
+ },
+ {
+  "slug": "queues",
+  "match": "public function failed(?\\Throwable $e): void",
+  "note": "모든 재시도가 실패한 뒤 딱 한 번 불린다. 여기서 또 예외를 던지지 않게 조심한다 — 로그·관리자 알림 정도만."
+ },
+ {
+  "slug": "queues",
+  "match": "php artisan queue:restart   # 떠 있는",
+  "note": "워커에게 '지금 잡만 끝내고 종료하라'는 표시를 캐시에 남긴다. 캐시가 동작하지 않으면 신호가 전달되지 않는다. 다시 띄우는 일은 Supervisor·Docker 가 한다."
+ },
+ {
+  "slug": "queues",
+  "match": "SendReceipt::dispatch($order);      // ⚠",
+  "note": "트랜잭션이 아직 커밋되지 않았다. 워커가 이 순간 잡을 꺼내면 SerializesModels 가 Order 를 다시 조회하는데, 다른 연결에서는 아직 보이지 않아 ModelNotFoundException 이 난다."
+ },
+ {
+  "slug": "queues",
+  "match": "public function handle(OrderPlaced $event): void",
+  "note": "이 타입 선언이 곧 '어느 이벤트를 듣나'다. 이벤트 자동 발견이 app/Listeners 를 훑어 이 타입을 읽고 연결한다. `php artisan event:list` 로 확인한다."
+ },
+ {
+  "slug": "queues",
+  "match": "return new Content(view: 'mail.welcome');",
+  "note": "뷰 이름 규칙은 화면과 같다 — 점 = 폴더 → resources/views/mail/welcome.blade.php. Mailable 의 public 속성($user)이 뷰 변수로 넘어간다."
+ },
+ {
+  "slug": "queues",
+  "match": "return $notifiable->wants_mail ? ['mail', 'database'] : ['database'];",
+  "note": "받는 사람마다 통로를 다르게 돌려줄 수 있다. wants_mail 은 예시 칸이다 — 실제로는 사용자 설정 칸 이름을 쓴다."
+ },
+ {
+  "slug": "queues",
+  "match": "* * * * * cd /var/www/app && php artisan schedule:run >> /dev/null 2>&1",
+  "note": "서버 crontab 에 이 한 줄뿐이다. 매분 Laravel 이 routes/console.php 의 목록을 보고 지금 돌 차례인 것만 실행한다. 경로는 서버의 프로젝트 루트로 바꾼다."
+ },
+ {
+  "slug": "queues",
+  "match": "->withoutOverlapping();                 // 앞",
+  "note": "앞 실행이 끝나지 않았으면 이번 실행을 건너뛴다. 캐시에 잠금을 걸기 때문에 캐시가 동작해야 한다."
+ },
+ {
+  "slug": "queues",
+  "match": "Queue::assertPushed(SendWelcomeMail::class, fn ($job) => $job->user->email === 'a@b.com');",
+  "note": "두 번째 인자 클로저로 '어떤 데이터를 실은 잡인지'까지 검사한다. 참을 돌려주는 잡이 하나라도 있으면 통과."
+ },
+ {
+  "slug": "api",
+  "match": "echo json_encode(['id' => $id, 'title' => $title], JSON_UNESCAPED_UNICODE);",
+  "note": "순수 PHP 는 헤더·상태 코드·인코딩·exit 를 따로 챙겨야 한다. Laravel 은 아래 한 줄이 네 가지를 모두 한다."
+ },
+ {
+  "slug": "api",
+  "match": "->header('Cache-Control', 'no-store');",
+  "note": "로그인 정보가 든 JSON 이 브라우저·프록시에 캐시되면 다른 사람에게 보일 수 있다. 그래서 '저장하지 마라' 헤더를 붙인다."
+ },
+ {
+  "slug": "api",
+  "match": "return Post::find(1);                       // 모델 → {\"id\":1,\"title\":…}",
+  "note": "모델을 그대로 돌려주면 테이블의 모든 칸이 나간다(`#[Hidden]` 만 빠진다). 공개 API 에서는 5절의 Resource 로 칸을 고른다."
+ },
+ {
+  "slug": "api",
+  "match": "})->middleware('auth:sanctum');",
+  "note": "`auth` 가 아니라 `auth:sanctum` — API 에는 세션이 없으므로 토큰으로 사용자를 찾는 sanctum 가드를 쓴다."
+ },
+ {
+  "slug": "api",
+  "match": "return new PostResource($post);          // 방금 만든 모델 → 201",
+  "note": "방금 `create()` 한 모델은 `wasRecentlyCreated` 가 true 라서, Resource 로 감싸 돌려주면 상태 코드가 자동으로 201 이 된다."
+ },
+ {
+  "slug": "api",
+  "match": "public function show(Post $post)             // 라우트 모델 바인딩 — 없으면 404 JSON",
+  "note": "`{post}` 자리의 id 로 모델을 찾아 넣어 준다. 없으면 컨트롤러에 오기 전에 404 — JSON 요청이면 404 JSON 이다."
+ },
+ {
+  "slug": "api",
+  "match": "'author'     => new UserResource($this->whenLoaded('user')),   // with('user') 했을 때만",
+  "note": "Resource 안에서 `$this->user` 를 그냥 쓰면 목록의 행마다 쿼리가 나가는 N+1 이 된다. whenLoaded 는 미리 불러온 경우에만 넣는다."
+ },
+ {
+  "slug": "api",
+  "match": "'admin_note' => $this->when($request->user()?->isAdmin(), $this->admin_note),",
+  "note": "조건이 거짓이면 키가 `null` 로 남는 게 아니라 JSON 에서 아예 빠진다. 관리자에게만 보여 줄 칸에 쓴다."
+ },
+ {
+  "slug": "api",
+  "match": "fn (Request $request) => $request->is('api/*') || $request->expectsJson(),",
+  "note": "`/api/…` 주소면 Accept 헤더가 없어도 예외를 JSON 으로 그린다. 앱이 헤더를 빼먹어도 HTML 오류 화면이 가지 않는다."
+ },
+ {
+  "slug": "api",
+  "match": "return ['token' => $user->createToken($request->device)->plainTextToken];",
+  "note": "평문 토큰은 지금 이 응답에서만 볼 수 있다. DB 에는 해시만 저장되므로 앱이 잃어버리면 새로 발급해야 한다."
+ },
+ {
+  "slug": "api",
+  "match": "$request->user()->currentAccessToken()->delete();",
+  "note": "지금 요청에 쓴 토큰 한 개만 지운다 = 이 기기만 로그아웃. 모든 기기는 `$user->tokens()->delete()`."
+ },
+ {
+  "slug": "api",
+  "match": "return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());",
+  "note": "로그인한 사람은 사용자 id 로, 손님은 IP 로 횟수를 센다. 한 IP 뒤에 여러 사람이 있는 회사망에서도 로그인 사용자끼리는 서로 막지 않는다."
+ },
+ {
+  "slug": "api",
+  "match": "Sanctum::actingAs($user = User::factory()->create());",
+  "note": "토큰을 실제로 발급하지 않고 '이 사용자로 인증됨' 상태를 만든다. 웹 테스트의 `actingAs()` 에 해당한다."
+ },
+ {
+  "slug": "api",
+  "match": "->assertJsonValidationErrors(['title']);",
+  "note": "422 응답의 `errors` 객체에 `title` 키가 있는지 본다. 웹 폼 테스트의 `assertSessionHasErrors()` 짝이다."
+ },
+ {
+  "slug": "security",
+  "match": "$middleware->validateCsrfTokens(except: [",
+  "note": "Laravel 11+ 의 CSRF 예외 목록. 옛 `VerifyCsrfToken::$except` 를 대신한다."
+ },
+ {
+  "slug": "security",
+  "match": "'webhooks/stripe',",
+  "note": "외부 서비스가 POST 하는 주소만 넣는다. 이 주소는 CSRF 검사가 없으니 **웹훅 서명 헤더를 직접 검증**해야 한다."
+ },
+ {
+  "slug": "security",
+  "match": "in_array($request->input('sort')",
+  "note": "세 번째 인자 `true` 는 엄격 비교(`===`). 목록에 없는 값이면 기본값 `created_at` 을 쓴다."
+ },
+ {
+  "slug": "security",
+  "match": "Post::orderBy($sort, $dir)->get();",
+  "note": "여기 들어가는 두 값은 모두 코드가 정한 목록 중 하나다 — 사용자 입력이 SQL 에 그대로 들어가지 않는다."
+ },
+ {
+  "slug": "security",
+  "match": "$post->update($request->safe()->only(['title', 'body']));",
+  "note": "`safe()` 는 검증을 통과한 값만 담은 객체다. 그중에서도 `title`·`body` 만 골라 넣는다."
+ },
+ {
+  "slug": "security",
+  "match": "return Limit::perMinute(5)",
+  "note": "1분에 5번. `by()` 의 문자열이 같은 요청끼리 횟수를 공유한다 — 여기서는 '이메일|IP' 조합."
+ },
+ {
+  "slug": "security",
+  "match": "->middleware('throttle:login');",
+  "note": "`throttle:` 뒤의 이름이 `RateLimiter::for('login', …)` 의 이름과 이어진다. 숫자(`throttle:10,1`)를 쓰면 이름 없는 간단한 제한이다."
+ },
+ {
+  "slug": "security",
+  "match": "->middleware('signed');",
+  "note": "URL 의 `signature` 가 맞고 만료되지 않았는지 검사한다. 틀리면 403."
+ },
+ {
+  "slug": "security",
+  "match": "->store('photos', 'public');",
+  "note": "첫 인자는 디스크 안의 폴더, 둘째는 디스크 이름. 파일 이름은 `hashName()` 이 정하고 저장된 경로를 돌려준다."
+ },
+ {
+  "slug": "security",
+  "match": "$response = $next($request);",
+  "note": "여기서 컨트롤러까지 실행되어 응답이 만들어진다. 이 줄 **뒤**의 코드는 응답을 다듬는 '뒤에서 일하는' 미들웨어다."
+ },
+ {
+  "slug": "security",
+  "match": "$middleware->append(",
+  "note": "전역 미들웨어 목록 끝에 붙인다 — 모든 요청에 적용된다. 특정 그룹에만 붙이려면 `web(append: [...])`."
+ },
+ {
+  "slug": "deploy",
+  "match": "define('DEBUG', $_SERVER['HTTP_HOST'] === 'localhost');",
+  "note": "순수 PHP 는 환경 판단을 코드에 넣었다. Laravel 은 코드를 그대로 두고 서버마다 `.env` 만 다르게 둔다."
+ },
+ {
+  "slug": "deploy",
+  "match": "php artisan key:generate     # .env 의 APP_KEY 를 새로 채운다 — 처음 한 번만",
+  "note": "배포 스크립트에 넣으면 배포할 때마다 열쇠가 바뀌어 모두 로그아웃되고 암호화한 데이터를 못 읽는다."
+ },
+ {
+  "slug": "deploy",
+  "match": "root /var/www/myapp/public;                          # 문서 루트 = public",
+  "note": "프로젝트 루트를 문서 루트로 잡으면 `https://사이트/.env` 로 DB 비밀번호가 열린다. 반드시 public."
+ },
+ {
+  "slug": "deploy",
+  "match": "location / { try_files $uri $uri/ /index.php?$query_string; }   # 없는 파일은 전부 index.php 로",
+  "note": "실제 파일(이미지·CSS)은 그대로 주고, 나머지 주소는 모두 index.php 로 넘긴다 — front controller 의 핵심."
+ },
+ {
+  "slug": "deploy",
+  "match": "composer install --no-dev --optimize-autoloader   # ② PHP 의존성 — 5절",
+  "note": "`install` 은 composer.lock 의 버전 그대로 설치한다. 운영에서 `update` 를 하면 시험하지 않은 버전이 깔린다."
+ },
+ {
+  "slug": "deploy",
+  "match": "php artisan migrate --force                       # ④ DB 구조 — 6절",
+  "note": "production 환경에서는 확인 질문이 뜨는데, 스크립트는 대답할 수 없으므로 --force 로 건너뛴다."
+ },
+ {
+  "slug": "deploy",
+  "match": "php artisan optimize                              # ⑤ 설정·라우트·뷰·이벤트 캐시 — 7절",
+  "note": "이 순간의 .env 값이 파일로 굳는다. 이후 .env 를 고치면 이 명령을 다시 실행해야 반영된다."
+ },
+ {
+  "slug": "deploy",
+  "match": "php artisan queue:restart                         # ⑦ 큐 워커에게 새 코드로 다시 뜨라고 — 10절",
+  "note": "워커는 옛 코드를 메모리에 들고 계속 돈다. 이 신호를 받으면 하던 작업을 마치고 종료하고, Supervisor 가 새 코드로 다시 띄운다."
+ },
+ {
+  "slug": "deploy",
+  "match": "@vite(['resources/css/app.css', 'resources/js/app.js'])",
+  "note": "로컬에서는 개발 서버 주소를, 운영에서는 public/build/manifest.json 을 보고 해시 붙은 파일 이름으로 태그를 만든다."
+ },
+ {
+  "slug": "deploy",
+  "match": "sudo chmod -R ug+rwx storage bootstrap/cache",
+  "note": "소유자와 웹 서버 그룹에만 쓰기를 준다. 777 로 열면 서버의 다른 사용자도 쓸 수 있게 된다."
+ },
+ {
+  "slug": "deploy",
+  "match": "* * * * * cd /var/www/myapp && php artisan schedule:run >> /dev/null 2>&1",
+  "note": "cron 은 매분 '지금 할 일 있나?'만 묻는다. 무엇을 언제 돌릴지는 routes/console.php 의 Schedule:: 코드가 정한다."
+ },
+ {
+  "slug": "deploy",
+  "match": "php artisan down --retry=60 --secret=\"deploy-7f3a9c\"   # 모든 요청에 503 \"점검 중\"",
+  "note": "--retry 는 Retry-After 헤더(초). --secret 주소를 한 번 연 브라우저만 점검 중에도 앱을 볼 수 있다."
+ },
+ {
+  "slug": "deploy",
+  "match": "health: '/up',                              // 헬스 체크 URL",
+  "note": "앱이 예외 없이 부팅되면 200. 로드 밸런서·배포 스크립트가 새 버전이 떴는지 이 주소로 확인한다."
+ },
+ {
+  "slug": "deploy",
+  "match": "docker compose exec app php artisan migrate --force",
+  "note": "PES 는 PHP 가 컨테이너 안에 있으므로 같은 명령 앞에 `docker compose exec app` 을 붙인다."
  }
 ]

@@ -464,7 +464,18 @@
     ['아티즌', '아티산', 'artisan'], ['팅커', 'tinker', 'repl'], ['캐시', 'cache'], ['설치', 'install', 'installer'],
     ['컴포저', 'composer'], ['카본', '날짜', 'carbon', 'now'], ['함정', '실수', 'pitfall'], ['퀴즈', '문제', 'quiz', '실습', 'exercise'],
     ['암기', '암기 카드'], ['매크로', 'macro'], ['도커', 'docker', 'compose'], ['환경', '.env', 'dotenv'],
-    ['csrf', '419'], ['기본값', 'default'], ['요청 흐름', '라이프사이클', 'lifecycle']
+    ['csrf', '419'], ['기본값', 'default'], ['요청 흐름', '라이프사이클', 'lifecycle'],
+    // 심화 문서
+    ['다대다', '피벗', 'pivot', 'belongstomany', 'many to many'], ['다형', '폴리모픽', 'polymorphic', 'morph'],
+    ['트랜잭션', 'transaction', '롤백', 'rollback', '커밋', 'commit'], ['잠금', '락', 'lock', 'lockforupdate'],
+    ['소프트 삭제', 'softdeletes', 'soft delete', '휴지통'], ['접근자', '변경자', 'accessor', 'mutator', 'attribute'],
+    ['큐', 'queue', '잡', 'job', '워커', 'worker'], ['메일', 'mail', 'mailable'], ['알림', 'notification', 'notify'],
+    ['스케줄', '스케줄러', 'schedule', 'cron', '크론'], ['리스너', 'listener'],
+    ['파일 업로드', '업로드', 'upload', 'storage', '스토리지', '디스크', 'disk'],
+    ['api', 'json', '제이슨'], ['리소스', 'resource', 'apiresource'], ['토큰', 'token', 'sanctum', '생텀'],
+    ['보안', 'security', 'xss', 'sql 인젝션', 'injection'], ['암호화', 'encrypt', 'crypt', '해시', 'hash'],
+    ['디버깅', '디버그', 'debug', 'dump'], ['로그', 'logging', 'pail'], ['예외', 'exception', '오류 처리'],
+    ['배포', 'deploy', 'deployment', '운영 서버', 'production'], ['최적화', 'optimize']
   ];
   var ALIAS_MAP = {};
   ALIAS.forEach(function (g) { g.forEach(function (w) { (ALIAS_MAP[w] = ALIAS_MAP[w] || []).push.apply(ALIAS_MAP[w], g); }); });

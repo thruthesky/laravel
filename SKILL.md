@@ -188,8 +188,14 @@ php artisan make:model Post -mf       # 모델 + 마이그레이션 + 팩토리 
 | 문서 | 이럴 때 | 마치면 할 수 있는 것 |
 |---|---|---|
 | [관계 심화](references/relations.md) | "글에 태그를 달고 싶다", "댓글 수를 목록에 같이 보여 주고 싶다" | 글–태그 같은 다대다 관계를 만들고 sync 로 고치며, withCount 로 개수를 N+1 없이 센다 |
+| [Eloquent 더](references/eloquent-plus.md) | "지운 글을 되살리고 싶다", "이름을 늘 같은 모양으로 보여 주고 싶다", "10만 행을 돌려야 한다" | 접근자·소프트 삭제·엄격 모드를 쓰고, 많은 행을 메모리 걱정 없이 처리한다 |
 | [트랜잭션·잠금](references/transactions.md) | "저장이 반만 되었다", "같은 시간이 두 번 예약됐다" | 여러 저장을 한 트랜잭션으로 묶고, 동시에 두 요청이 와도 데이터가 깨지지 않게 만든다 |
+| [파일·캐시](references/files-cache.md) | "사진을 올리고 싶다", "순위 계산이 느리다" | 파일을 검증해 디스크에 저장하고 URL 로 보여 주며, 느린 계산을 캐시하고 제때 지운다 |
+| [큐·이벤트·메일](references/queues.md) | "메일 보내느라 응답이 느리다", "매일 새벽에 정리 작업을 돌리고 싶다" | 느린 일을 잡으로 큐에 넘기고, 메일·알림을 보내고, 정해진 시각에 명령을 돌린다 |
+| [JSON API](references/api.md) | "앱에서 쓸 JSON API 가 필요하다" | JSON API 를 만들고 Resource 로 응답 모양을 정하며, 토큰으로 인증하고 테스트한다 |
+| [보안](references/security.md) | "이 코드 안전한가요?" | 공격마다 Laravel 이 막아 주는 것과 내가 막아야 할 것을 구분해 말한다 |
 | [디버깅·로그](references/debugging.md) | "500 오류가 났다", "어떤 SQL 이 나가는지 보고 싶다" | 오류가 나면 로그 → 라우트 → tinker → dd 순서로 원인을 좁히고, 예외를 원하는 응답으로 바꾼다 |
+| [배포](references/deploy.md) | "운영 서버에 올리고 싶다", "배포했더니 화면이 깨졌다" | 배포 순서를 체크리스트로 말하고, 배포 뒤 흔한 오류(캐시·권한·manifest)를 스스로 고친다 |
 
 가르치는 방법은 7단계와 같다(개념 → 순수 PHP 비교 → 코드 → 확인 문제 2~3개). 퀴즈는 [exercises.md](references/exercises.md#2-문제-은행) 문제 은행의 "심화" 표를 쓴다. 심화 문서의 API 는 Laravel 13 소스(`vendor/laravel/framework/src`)로 확인해 두었지만, 설명하기 전에 사용자의 프로젝트 버전을 한 번 더 확인한다.
 
@@ -245,10 +251,34 @@ PHP 는 잘하지만 Laravel 이 처음인 사람이 실제로 빠지는 함정 
 
 다대다·피벗·관계 집계·다형 — belongsToMany·피벗 테이블·sync, hasManyThrough, 다형 관계, withCount·whereRelation, 제약 있는 즉시 로딩. 마치면: 글–태그 같은 다대다 관계를 만들고 sync 로 고치며, withCount 로 개수를 N+1 없이 센다.
 
+### 심화 Eloquent 더 → [references/eloquent-plus.md](references/eloquent-plus.md)
+
+접근자·소프트 삭제·전역 스코프·엄격 모드·대량 처리 — Attribute::make 접근자·변경자, SoftDeletes, 전역 스코프, shouldBeStrict, chunkById·lazy·upsert, 옵저버. 마치면: 접근자·소프트 삭제·엄격 모드를 쓰고, 많은 행을 메모리 걱정 없이 처리한다.
+
 ### 심화 트랜잭션·잠금 → [references/transactions.md](references/transactions.md)
 
 DB::transaction·잠금·경쟁 조건 — DB::transaction, afterCommit, lockForUpdate, 낙관적 잠금, createOrFirst·upsert, 원자적 증가, DB 제약. 마치면: 여러 저장을 한 트랜잭션으로 묶고, 동시에 두 요청이 와도 데이터가 깨지지 않게 만든다.
 
+### 심화 파일·캐시 → [references/files-cache.md](references/files-cache.md)
+
+파일 업로드·저장소와 캐시 — 업로드 검증·store, Storage 디스크, storage:link, Cache::remember, 캐시 무효화, Cache::lock. 마치면: 파일을 검증해 디스크에 저장하고 URL 로 보여 주며, 느린 계산을 캐시하고 제때 지운다.
+
+### 심화 큐·이벤트·메일 → [references/queues.md](references/queues.md)
+
+요청 밖에서 일하기 — ShouldQueue 잡, queue:work·restart, 이벤트·리스너, Mailable, 알림, routes/console.php 스케줄, 페이크 테스트. 마치면: 느린 일을 잡으로 큐에 넘기고, 메일·알림을 보내고, 정해진 시각에 명령을 돌린다.
+
+### 심화 JSON API → [references/api.md](references/api.md)
+
+api 라우트·API Resource·Sanctum — install:api, apiResource, API Resource, 422·404 JSON 오류, Sanctum 토큰, 상태 코드, API 테스트. 마치면: JSON API 를 만들고 Resource 로 응답 모양을 정하며, 토큰으로 인증하고 테스트한다.
+
+### 심화 보안 → [references/security.md](references/security.md)
+
+Laravel 이 대신 막아 주는 것과 내가 막아야 할 것 — XSS·CSRF·SQL 인젝션·대량 할당·권한·비밀번호·암호화·요청 제한·서명된 URL·업로드 검증. 마치면: 공격마다 Laravel 이 막아 주는 것과 내가 막아야 할 것을 구분해 말한다.
+
 ### 심화 디버깅·로그 → [references/debugging.md](references/debugging.md)
 
 디버깅·로그·예외 처리 — 디버깅 순서, dump·dd, toRawSql·쿼리 로그, Log 채널·pail, withExceptions, abort, 오류 화면·APP_DEBUG. 마치면: 오류가 나면 로그 → 라우트 → tinker → dd 순서로 원인을 좁히고, 예외를 원하는 응답으로 바꾼다.
+
+### 심화 배포 → [references/deploy.md](references/deploy.md)
+
+로컬에서 운영 서버로 — 운영 .env, composer install --no-dev, migrate --force, optimize, Vite 빌드, storage:link, queue:restart, /up. 마치면: 배포 순서를 체크리스트로 말하고, 배포 뒤 흔한 오류(캐시·권한·manifest)를 스스로 고친다.
