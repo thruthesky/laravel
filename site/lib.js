@@ -220,6 +220,7 @@
       var w = document.createElement('div'); w.className = 'tbl';
       t.parentNode.insertBefore(w, t); w.appendChild(t);
     });
+    L.hideAnswers(root);
     L.noBreak(root);
     L.$$('pre > code', root).forEach(function (c) {
       var m = (c.className || '').match(/language-([\w-]+)/), lang = m ? m[1] : '';
@@ -230,6 +231,61 @@
     return root;
   };
   function safeDecode(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+
+  /* ── 퀴즈·암기 카드 — 답 칸을 가린다 ─────────────────── */
+  // md 원문은 그대로 둔다(AI 가 채점에 쓴다). 사람이 보는 화면에서만 마지막 열이 "답"인 표를 가린다
+  var ANSWER_HEAD = /^(답|정답|정답·해설)$/;
+  L.hideAnswers = function (root) {
+    L.$$('table', root).forEach(function (t) {
+      if (t.classList.contains('quiz')) return;
+      var ths = L.$$('thead th', t), col = ths.length - 1;
+      if (col < 1 || !ANSWER_HEAD.test(ths[col].textContent.trim())) return;
+      t.classList.add('quiz');
+      var cells = [];
+      L.$$('tbody tr', t).forEach(function (tr) {
+        var td = tr.children[col];
+        if (!td) return;
+        var ans = document.createElement('span');
+        ans.className = 'ans-t';
+        while (td.firstChild) ans.appendChild(td.firstChild);
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'ans-b'; b.textContent = '답 보기';
+        b.setAttribute('data-no-gl', ''); b.setAttribute('aria-expanded', 'false');
+        td.classList.add('ans');
+        td.appendChild(b); td.appendChild(ans);
+        cells.push(td);
+      });
+      if (!cells.length) return;
+      function show(td, on) {
+        td.classList.toggle('open', on);
+        var b = td.querySelector('.ans-b');
+        b.textContent = on ? '가리기' : '답 보기';
+        b.setAttribute('aria-expanded', on ? 'true' : 'false');
+        count();
+      }
+      t.addEventListener('click', function (ev) {
+        var b = ev.target.closest('.ans-b');
+        if (b) { ev.stopPropagation(); show(b.parentNode, !b.parentNode.classList.contains('open')); return; }
+        // 가려진 칸은 어디를 눌러도 열린다(열린 칸 안의 용어·링크는 그대로 동작)
+        var td = ev.target.closest('td.ans');
+        if (td && !td.classList.contains('open')) show(td, true);
+      });
+      var bar = document.createElement('div');
+      bar.className = 'quiz-bar';
+      bar.setAttribute('data-no-gl', '');
+      bar.innerHTML = '<span class="q-info"><b>스스로 풀어 보기</b> — 답을 떠올린 뒤 눌러 보세요 · <span class="q-cnt"></span></span>' +
+        '<button type="button" class="q-all">모두 보기</button><button type="button" class="q-none">모두 가리기</button>';
+      function count() {
+        var n = cells.filter(function (c) { return c.classList.contains('open'); }).length;
+        bar.querySelector('.q-cnt').textContent = n + ' / ' + cells.length + ' 열어 봄';
+      }
+      bar.querySelector('.q-all').addEventListener('click', function () { cells.forEach(function (c) { show(c, true); }); });
+      bar.querySelector('.q-none').addEventListener('click', function () { cells.forEach(function (c) { show(c, false); }); });
+      var box = t.parentNode.classList.contains('tbl') ? t.parentNode : t;
+      box.parentNode.insertBefore(bar, box);
+      count();
+    });
+  };
 
   /* ── 용어 사전 ────────────────────────────────────────── */
   var G = L.gloss = { list: [], byId: {}, byTerm: {}, re: null, seen: {}, ready: null, done: false };
