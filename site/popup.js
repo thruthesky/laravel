@@ -339,6 +339,14 @@
     var inPop = popOf(ev.target);
     if (!inPop) closeAll();
   });
+  // 키보드 — 초점이 간 용어에서 Enter·Space 로 팝업(각주 번호·링크는 원래 단추·링크라 저절로 된다)
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target;
+    if ((ev.key === 'Enter' || ev.key === ' ') && t.classList && t.classList.contains('gl') && t.hasAttribute('data-t')) {
+      ev.preventDefault();
+      t.click();
+    }
+  });
   document.addEventListener('keydown', function (ev) {
     if (ev.key === 'Escape' && stack.length) {
       ev.preventDefault(); ev.stopPropagation();

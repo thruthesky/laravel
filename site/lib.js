@@ -368,16 +368,20 @@
     var parts = keys.map(function (c) {
       var slot = core[c], f = c.charAt(0), l = c.charAt(c.length - 1), pre, post = '';
       var e = c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      if (/[가-힣]/.test(f)) pre = '(?<![가-힣])';
-      else if (/[A-Za-z0-9_]/.test(f)) pre = '(?<![A-Za-z0-9_$@\\\\])';
-      else if (f === '$') pre = '(?<![A-Za-z0-9_$])';
-      else if (f === '@') pre = '(?<![A-Za-z0-9_@])';
-      else pre = '(?<![A-Za-z0-9_])';
+      // 앞 글자 조건 — lookbehind 로 걸고, 못 쓰는 브라우저를 위해 같은 조건을 slot.preRe 에도 둔다
+      var cls = /[가-힣]/.test(f) ? '가-힣' : /[A-Za-z0-9_]/.test(f) ? 'A-Za-z0-9_$@\\\\' : f === '$' ? 'A-Za-z0-9_$' : f === '@' ? 'A-Za-z0-9_@' : 'A-Za-z0-9_';
+      pre = '(?<![' + cls + '])';
+      slot.preRe = new RegExp('[' + cls + ']');
       if (!slot.plain) post = '(?=\\()';
       else if (/[A-Za-z0-9_]/.test(l)) post = '(?![A-Za-z0-9_])';
-      return pre + e + post;
+      slot.body = e + post;
+      return pre + slot.body;
     });
-    try { G.re = new RegExp(parts.join('|'), 'g'); } catch (err) { G.re = null; }   // lookbehind 를 못 쓰는 브라우저
+    try { G.re = new RegExp(parts.join('|'), 'g'); }
+    catch (err) {
+      // lookbehind 를 못 쓰는 브라우저 — 앞 글자 조건은 G.apply 가 손으로 검사한다(밑줄·팝업이 통째로 꺼지지 않게)
+      try { G.re = new RegExp(keys.map(function (c) { return core[c].body; }).join('|'), 'g'); G.noLB = true; } catch (e2) { G.re = null; }
+    }
     G.done = true;
     return G;
   }).catch(function (err) { console.warn('용어 사전을 읽지 못했습니다', err); G.done = true; return G; });
@@ -416,6 +420,7 @@
       var nd = nodes[ni];
       if (!nd.ok || en > nd.s + nd.n.data.length) continue;
       var slot = G.core[m[0]]; if (!slot) continue;
+      if (G.noLB && st > 0 && slot.preRe.test(text.charAt(st - 1))) continue;
       var e = (text.charAt(en) === '(' && slot.paren) ? slot.paren : (slot.plain || slot.paren);
       if (!e || e === opt.exclude) continue;
       hits.push({ nd: nd, a: st - nd.s, b: en - nd.s, e: e });
@@ -431,6 +436,8 @@
       var s = document.createElement('span');
       s.className = 'gl' + (h.mark ? ' gl-m' : '');
       s.setAttribute('data-t', h.e.id);
+      // 키보드로도 연다 — 밑줄이 보이는 것(처음 두 번)만 탭 순서에 넣는다
+      if (h.mark) { s.setAttribute('tabindex', G.mode === 'off' ? '-1' : '0'); s.setAttribute('role', 'button'); }
       s.textContent = mid.data;
       mid.parentNode.replaceChild(s, mid);
     }
@@ -440,6 +447,7 @@
   G.setMode = function (m) {
     G.mode = m; L.store.set('lv-gl-mode', m);
     document.body.setAttribute('data-gl', m);
+    L.$$('.gl.gl-m[tabindex]').forEach(function (x) { x.setAttribute('tabindex', m === 'off' ? '-1' : '0'); });
     var b = document.getElementById('glMode');
     if (b) b.innerHTML = '<i></i>용어 밑줄 · <b>' + { mark: '처음 두 번', all: '전부', off: '끔' }[m] + '</b>';
   };

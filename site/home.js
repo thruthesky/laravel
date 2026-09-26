@@ -133,10 +133,7 @@
     L.$('#termsLead').textContent = '용어 ' + L.gloss.list.length + '개 — 모든 항목에 뜻·순수 PHP 비교가 있고, 예제와 “자세히”(문서의 해당 절)가 붙어 있습니다. 올려 보거나 눌러 보세요.';
     stats();
   });
-  // 키보드로 용어 모음을 연다
-  L.$('#cloud').addEventListener('keydown', function (ev) {
-    if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.classList.contains('gl')) { ev.preventDefault(); ev.target.click(); }
-  });
+  // 키보드로 여는 일은 popup.js 가 모든 용어에 대해 한다
 
   /* ── 숫자 ─────────────────────────────────────────────── */
   function stats() {
