@@ -328,5 +328,21 @@
   // 화면이 한가할 때 색인을 미리 만들어 둔다
   (window.requestIdleCallback || function (f) { setTimeout(f, 1200); })(function () { build(); });
 
-  L.search = { open: open, close: close, build: build, query: query, stats: stats };
+  // 용어가 글자 그대로 나오는 절 — 용어 팝업의 "쓰이는 곳" 탭이 쓴다(별칭 넓히기 없이 정확한 표기만)
+  function usedIn(names, skip) {
+    var ns = names.map(function (n) { return lower(n.replace(/\(\)$/, '(')); }).filter(function (n) { return n.length >= 2; });
+    var re = needleRe(ns.map(function (n) { return n.replace(/\($/, ''); })), out = [];
+    items.forEach(function (it) {
+      if (it.type !== 'sec' || !it.h) return;
+      var key = it.d.slug + '#' + it.h.anchor;
+      if (key === skip) return;
+      var n = 0;
+      ns.forEach(function (v) { n += count(it.hay, v); });
+      if (!n) return;
+      out.push({ it: it, key: key, n: n + (ns.some(function (v) { return it.tl.indexOf(v) >= 0; }) ? 10 : 0), snip: snippet(it.text, ns, re) });
+    });
+    out.sort(function (a, b) { return b.n - a.n || a.it.d.i - b.it.d.i; });
+    return out;
+  }
+  L.search = { open: open, close: close, build: build, query: query, usedIn: usedIn, stats: stats };
 })();

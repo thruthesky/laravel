@@ -696,3 +696,12 @@ table.quiz td:first-child { white-space: nowrap; }
 .flow-doc { margin: 1em 0; }
 .md details.ascii { margin: .6em 0 1em; }
 .md details.ascii > summary { cursor: pointer; font-size: 13px; color: var(--muted); font-weight: 600; }
+
+/* ── 용어 팝업 "쓰이는 곳" 탭 ─────────────────────────────── */
+.pop ul.used { list-style: none; margin: 0; padding: 0; }
+.pop ul.used li { padding: 7px 0; border-top: 1px solid var(--rule); }
+.pop ul.used li:first-child { border-top: 0; padding-top: 0; }
+.pop ul.used a { font-weight: 700; text-decoration: none; display: block; line-height: 1.4; }
+.pop ul.used a small { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; }
+.pop ul.used p { margin: 2px 0 0; font-size: 12.5px; color: var(--ink2); line-height: 1.5; }
+.pop ul.used mark { background: var(--mark); color: inherit; border-radius: 2px; }

@@ -129,6 +129,7 @@
     var list = [['뜻', mean]];
     if (e.example && e.example.code) list.push(['예제', example]);
     if (e.see) list.push(['자세히', more]);
+    if (L.search && L.search.usedIn) list.push(['쓰이는 곳', used]);
     list.forEach(function (it, i) {
       var b = document.createElement('button');
       b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = it[0];
@@ -185,6 +186,25 @@
         allowGloss(body);
         place(p);
       }, function (err) { body.innerHTML = '<p>불러오지 못했습니다 — ' + L.esc(err.message) + '</p>'; });
+    }
+    // 이 용어가 글자 그대로 나오는 다른 절들 — 링크에 올리면 그 절이 또 팝업으로 뜬다
+    function used() {
+      go.hidden = true;
+      loading(body);
+      L.search.build().then(function () {
+        var rs = L.search.usedIn([e.term].concat(e.aliases || []), e.see), MAX = 8;
+        if (!rs.length) { body.innerHTML = '<p class="cap">“자세히” 탭의 절 말고는 이 용어가 나오는 곳이 없습니다.</p>'; return; }
+        var h = '<p class="cap">이 용어가 나오는 절 ' + rs.length + '곳' + (rs.length > MAX ? ' 중 많이 나오는 ' + MAX + '곳' : '') +
+          ' — 올리면 미리보기, 누르면 이동</p><ul class="used">';
+        rs.slice(0, MAX).forEach(function (r) {
+          var it = r.it;
+          h += '<li><a href="' + L.docUrl(it.d.slug, it.h.anchor) + '" data-pv="' + L.esc(r.key) + '">' +
+            '<small>' + L.esc(stageText(it.d.stage) + ' · ' + it.d.short + (it.path.length ? ' › ' + it.path.join(' › ') : '')) + '</small>' + L.esc(it.title) + '</a>' +
+            '<p>' + r.snip + '</p></li>';
+        });
+        body.innerHTML = h + '</ul>';
+        place(p);
+      }, function () { body.innerHTML = '<p>검색 색인을 만들지 못했습니다.</p>'; });
     }
     mean();
     return el;
