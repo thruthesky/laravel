@@ -8,7 +8,7 @@
 window.LARAVEL_SITE = {
   repo: 'https://github.com/thruthesky/laravel',
   // 배포할 때 올린다 — md·json 을 브라우저 캐시에서 옛것으로 읽지 않게(html 의 ?v= 와 같은 값)
-  v: '2026092701',
+  v: '2026092702',
   branch: 'main',
   docs: [
     { slug: 'skill', path: 'SKILL.md', stage: '개요', short: '스킬 개요',

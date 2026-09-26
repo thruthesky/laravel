@@ -21,6 +21,7 @@
 | 두 번 누르면 같은 예약이 두 개 생긴다 | [트랜잭션 — 경쟁 조건](transactions.md#7-경쟁-조건--firstorcreate-와-unique-제약) |
 | 올린 사진 URL 이 404 | [storage:link](files-cache.md#5-storagelink--공개-url-만들기) |
 | 배포 뒤 `Vite manifest not found` · 500 · 권한 오류 | [배포 — 프런트 자산](deploy.md#8-프런트-자산--vite-와-npm-run-build) · [쓰기 권한](deploy.md#9-쓰기-권한과-storage) |
+| `<script>` 안에 넘긴 값의 `</script>` 가 그대로 나온다 · `x-data="…"` 속성이 끊긴다 | [@json 과 @js](blade.md#php-값을-js-로-넘기기--json-과-js) |
 | 500 오류인데 원인을 모르겠다 | [디버깅 순서](debugging.md#1-어디부터-볼까--디버깅-순서) |
 
 ## 목차

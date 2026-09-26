@@ -698,5 +698,40 @@
   "slug": "deploy",
   "match": "docker compose exec app php artisan migrate --force",
   "note": "PES 는 PHP 가 컨테이너 안에 있으므로 같은 명령 앞에 `docker compose exec app` 을 붙인다."
+ },
+ {
+  "slug": "blade",
+  "match": "const slot = <?= json_encode($config['slot_minutes']",
+  "note": "순수 PHP 에서 JS 로 값을 넘기던 방법이다. 네 개의 `JSON_HEX_*` 옵션을 빠뜨리면 값 안의 `</script>` 가 블록을 닫아 버린다."
+ },
+ {
+  "slug": "blade",
+  "match": "const slot = @json(config('tutor.slot_minutes'));",
+  "note": "`@json` 은 위의 순수 PHP 한 줄로 컴파일된다. 옵션 `15` 가 바로 그 네 개의 `JSON_HEX_*` 이다."
+ },
+ {
+  "slug": "blade",
+  "match": "// 컴파일 결과: <?php echo json_encode(config('tutor.slot_minutes'), 15, 512) ?>",
+  "note": "Laravel 13.0 의 `CompilesJson` 이 만든 실제 PHP 다. 둘째 인자 `15` = 이스케이프 옵션, 셋째 `512` = 최대 깊이."
+ },
+ {
+  "slug": "blade",
+  "match": "<script>const slot = @json($slotRule);</script>",
+  "note": "괄호 안에 쉼표가 없으니 이스케이프 옵션이 그대로 붙는다. 기본값 처리는 컨트롤러에서 해서 `$slotRule` 로 넘긴다."
+ },
+ {
+  "slug": "blade",
+  "match": "<script>const slot = @js(config('tutor.slot_minutes', []));</script>",
+  "note": "`@js` 는 괄호 안을 자르지 않고 통째로 `Js::from()` 에 넘기므로, 쉼표가 있어도 이스케이프가 유지된다."
+ },
+ {
+  "slug": "blade",
+  "match": "<div x-data=\"{ rule: @json(config('tutor.slot_minutes')) }\">",
+  "note": "`@json` 은 `{\"min\":10}` 처럼 큰따옴표를 쓰므로, 큰따옴표로 감싼 속성이 `{ rule: {` 에서 끝나 버린다."
+ },
+ {
+  "slug": "blade",
+  "match": "<div x-data=\"{ rule: @js(config('tutor.slot_minutes')) }\">",
+  "note": "`@js` 는 배열을 `JSON.parse('…')` 로 바꾸고 큰따옴표를 `\\u0022` 로 감춰서 속성 안에서도 안전하다."
  }
 ]

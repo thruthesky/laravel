@@ -302,6 +302,72 @@ PES 화면에는 `x-data`, `x-on:click`, `x-bind:` 같은 속성이 보인다. *
 
 주의: `<x-컴포넌트>` 태그의 `:done="..."` 은 Blade 의 PHP 식이고, 일반 HTML 태그의 `:class="..."` 는 Alpine 의 JS 식이다. 같은 `:` 라도 **어느 태그에 붙었나**로 구분한다. JS 쪽 `{{ }}` 를 Blade 가 먹지 않게 하려면 `@{{ }}` 로 쓴다.
 
+### PHP 값을 JS 로 넘기기 — @json 과 @js
+
+설정값·DB 값(서버 PHP)을 브라우저 JS 가 써야 할 때가 있다. 예를 들어 시간표 화면의 JS 가 "칸 길이는 10~180분, 5분 단위"라는 규칙을 알아야 한다면, 그 숫자는 `config/tutor.php` 에 있다([lifecycle.md 6절](lifecycle.md#6-env--config--config)). 이때 `{{ }}` 는 맞지 않는다 — `{{ }}` 는 **HTML 용** 이스케이프라 배열을 못 넘기고, 문자열이면 JS 따옴표 문법과 어긋난다.
+
+순수 PHP 로는 이렇게 했다:
+
+```php
+<script>
+  const slot = <?= json_encode($config['slot_minutes'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+</script>
+```
+
+Blade 의 `@json(값)` 이 정확히 이 한 줄이다. Laravel 13.0 소스(`Illuminate/View/Compilers/Concerns/CompilesJson.php`)에서 컴파일 결과를 확인했다:
+
+```blade
+<script>
+  const slot = @json(config('tutor.slot_minutes'));
+  // 컴파일 결과: <?php echo json_encode(config('tutor.slot_minutes'), 15, 512) ?>
+  // 브라우저에 나가는 것: const slot = {"min":10,"max":180,"step":5};
+</script>
+```
+
+- `15` 는 `JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT` 를 더한 값이다. `<` `>` `'` `&` `"` 를 `\u003C` 처럼 바꿔서, 값 안에 `</script>` 가 들어 있어도 `<script>` 블록을 닫지 못하게 한다(XSS 방어 — [security.md 2절](security.md#2-xss--화면-출력-이스케이프)).
+- `config('…')` 는 배열이든 숫자든 문자열이든 그대로 JSON 이 된다. 숫자는 `10`, 문자열은 `"PES"`, 배열은 `{…}`·`[…]`.
+
+#### ⚠ 괄호 안에 쉼표를 쓰면 보호가 조용히 꺼진다
+
+`@json` 은 괄호 안을 **쉼표로 잘라서** 둘째 조각을 `json_encode` 의 옵션으로, 셋째 조각을 깊이로 쓴다. 그래서 `config()` 의 기본값처럼 쉼표가 든 식을 넣으면 **오류 없이** 이스케이프 옵션 `15` 가 사라진다. Laravel 13.0 에서 값에 `</script><script>alert(1)</script>` 를 넣고 실제로 그려 본 결과:
+
+| 쓴 것 | 컴파일 결과 | 브라우저로 나간 값 |
+|---|---|---|
+| `@json(config('demo.msg'))` | `json_encode(config('demo.msg'), 15, 512)` | `"\u003C\/script\u003E…"` ✅ 안전 |
+| `@json(config('demo.msg', '기본'))` | `json_encode(config('demo.msg', '기본'), 512)` | `"<\/script><script>alert(1)<\/script>"` ❌ 태그가 그대로 |
+| `@js(config('demo.msg', '기본'))` | `Js::from(config('demo.msg', '기본'))->toHtml()` | `'\u003C\/script\u003E…'` ✅ 안전 |
+
+둘째 줄에서 `, '기본'` 이 옵션 자리로 들어가 `15` 를 밀어냈다. 배열 리터럴(`@json(['a' => 1, 'b' => 2])`)도 같은 이유로 옵션이 사라진다. 피하는 법은 셋 중 하나다:
+
+```blade
+{{-- ① 쉼표 없는 식만 넣는다 — 기본값이 필요하면 컨트롤러에서 변수로 만들어 넘긴다 --}}
+<script>const slot = @json($slotRule);</script>
+
+{{-- ② @js 를 쓴다 — 괄호 안을 자르지 않고 통째로 Js::from() 에 넘긴다 --}}
+<script>const slot = @js(config('tutor.slot_minutes', []));</script>
+
+{{-- ③ 이스케이프 옵션까지 직접 적는다(권하지 않음 — 길고 빠뜨리기 쉽다) --}}
+```
+
+#### HTML 속성 안에는 @js
+
+`@json` 의 결과는 `{"min":10}` 처럼 **큰따옴표**를 그대로 쓴다. 그래서 `x-data="…"` 같은 큰따옴표 속성 안에 넣으면 속성이 중간에 끊긴다. 속성 안에는 `@js` 를 쓴다 — 문자열은 작은따옴표 `'…'`, 배열·객체는 `JSON.parse('…')` 로 바꾸고 큰따옴표를 `\u0022` 로 감춘다.
+
+```blade
+{{-- ❌ 속성이 x-data="{ rule: { 에서 끊긴다 --}}
+<div x-data="{ rule: @json(config('tutor.slot_minutes')) }">
+
+{{-- ✅ 브라우저로 나가는 것: x-data="{ rule: JSON.parse('{\u0022min\u0022:10,…}') }" --}}
+<div x-data="{ rule: @js(config('tutor.slot_minutes')) }">
+```
+
+| 어디에 | 쓸 것 |
+|---|---|
+| `<script>` 블록 안, 쉼표 없는 식 | `@json(식)` 또는 `@js(식)` |
+| `<script>` 블록 안, 쉼표가 든 식(`config('키', 기본값)`·배열 리터럴) | `@js(식)` — `@json` 은 보호가 꺼진다 |
+| HTML 속성 안(`x-data="…"`·`data-…="…"`) | `@js(식)` |
+| 화면 글자(HTML) | `{{ 값 }}` — JS 가 아니다 |
+
 ---
 
 ## 10. 암기 카드
@@ -323,3 +389,6 @@ PES 화면에는 `x-data`, `x-on:click`, `x-bind:` 같은 속성이 보인다. *
 | 칸별 오류 메시지는? | `@error('칸') {{ $message }} @enderror` |
 | 선택·체크 상태를 조건으로? | `@selected(식)`, `@checked(식)` |
 | Alpine 의 `{{ }}` 를 Blade 가 건드리지 않게 하려면? | `@{{ }}` |
+| `@json(config('x'))` 가 하는 일은? | `json_encode(config('x'), 15, 512)` — `<` `>` `'` `&` `"` 를 `\u003C` 처럼 감춘 JSON |
+| `@json(config('x', []))` 의 함정은? | 괄호 안을 쉼표로 잘라 이스케이프 옵션이 사라진다 → `@js(...)` 를 쓰거나 변수로 넘긴다 |
+| HTML 속성(`x-data="…"`) 안에 PHP 배열을 넘기려면? | `@js(값)` — `@json` 의 큰따옴표가 속성을 끊는다 |

@@ -78,6 +78,8 @@
 | 5-3 | `tutor/schedule.blade.php` 에 `<html>` 태그가 없는데 완성된 HTML 이 나오는 이유는? | `@extends('layouts.app')` — 레이아웃이 틀을 주고 `@section('content')` 가 빈칸을 채운다 |
 | 5-4 | `{!! $profile->bio !!}` 를 쓰면 무엇이 위험한가? | 강사가 쓴 `<script>` 가 그대로 실행(XSS). `{{ }}` 를 쓴다 |
 | 5-5 | 검증 실패 뒤 입력 칸에 이전 값, 없으면 DB 값을 보이려면? | `value="{{ old('headline', $profile->headline) }}"` |
+| 5-6 | `<script>const rule = @json(config('tutor.slot_minutes'));</script>` 에서 `@json` 이 `{{ }}` 대신 쓰이는 이유와, 값에 `</script>` 가 들어 있으면 어떻게 되나? | `{{ }}` 는 HTML 이스케이프라 배열을 JS 값으로 못 넘긴다. `@json` 은 `json_encode(…, 15, 512)` 로 `<` `>` 를 `\u003C` 처럼 감춰 `</script>` 가 블록을 닫지 못한다 |
+| 5-7 | `@json(config('tutor.x', []))` 는 무엇이 위험하고 어떻게 고치나? | `@json` 이 괄호 안을 쉼표로 잘라 `, []` 가 옵션 자리에 들어가고 이스케이프 옵션 `15` 가 사라진다(오류 없음). `@js(config('tutor.x', []))` 를 쓰거나 컨트롤러에서 변수로 넘긴다 |
 
 ### 6단계 — DB 구조 ([database.md](database.md))
 
