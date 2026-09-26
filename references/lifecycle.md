@@ -184,7 +184,7 @@ public function boot(): void
 }
 ```
 
-**핵심 로직**: `Route::macro()` 는 Laravel 클래스에 **메서드를 새로 붙이는** 기능이다. 여기서 붙인 `localized` 덕분에 `routes/web.php` 에서 `Route::localized(function () { ... })` 를 쓸 수 있다. 자세히는 [routing.md](routing.md) 7절.
+**핵심 로직**: `Route::macro()` 는 Laravel 클래스에 **메서드를 새로 붙이는** 기능이다. 여기서 붙인 `localized` 덕분에 `routes/web.php` 에서 `Route::localized(function () { ... })` 를 쓸 수 있다. 자세히는 [routing.md 7절](routing.md#7-pes-의-routelocalized-해부).
 
 ---
 

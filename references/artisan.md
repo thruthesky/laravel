@@ -29,8 +29,8 @@ docker compose exec app php artisan route:list
 
 | 명령 | 하는 일 |
 |---|---|
-| `php artisan test` | Pest 테스트 ([testing.md](testing.md)) |
-| `php artisan migrate` | 마이그레이션 적용 ([database.md](database.md)) |
+| `php artisan test` | Pest 테스트 ([testing.md](testing.md#9-실행)) |
+| `php artisan migrate` | 마이그레이션 적용 ([database.md](database.md#7-마이그레이션-명령과-주의)) |
 | `php artisan tinker` | 앱이 로드된 PHP REPL (6절) |
 | `php artisan route:list` | 라우트 목록 |
 | `php artisan optimize:clear` | 모든 캐시 비우기 |
@@ -122,7 +122,7 @@ docker compose exec app php artisan tinker
 - **조회는 자유롭게.** `create`·`update`·`delete` 는 로컬 DB 에서만, 운영 서버에서는 하지 않는다.
 - `exit` 또는 Ctrl+D 로 나온다.
 
-실습 문제는 [exercises.md](exercises.md) 3절.
+실습 문제는 [exercises.md 3절](exercises.md#3-tinker-조회-실습).
 
 ---
 

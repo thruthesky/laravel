@@ -65,7 +65,7 @@ cd laravel-study                                           # 이제부터는 여
 php artisan serve                                          # http://127.0.0.1:8000
 ```
 
-`php artisan serve` 는 PHP 내장 웹 서버로 띄운다. 공식 문서의 `composer run dev` 는 Vite(Node)까지 함께 띄우므로, Node 를 쓰지 않으면 `php artisan serve` 로 충분하다. 연습 과제는 [exercises.md](exercises.md) 4절.
+`php artisan serve` 는 PHP 내장 웹 서버로 띄운다. 공식 문서의 `composer run dev` 는 Vite(Node)까지 함께 띄우므로, Node 를 쓰지 않으면 `php artisan serve` 로 충분하다. 연습 과제는 [exercises.md 4절](exercises.md#4-연습-프로젝트--미니-게시판).
 
 ---
 

@@ -219,7 +219,7 @@ protected $fillable = ['name', 'email', 'password', 'timezone'];   // 옛 방식
 
 ### 핵심 개념
 
-DB 는 문자열·숫자만 준다. casts 는 **읽을 때 PHP 타입으로, 저장할 때 DB 형식으로** 자동 변환한다.
+DB 는 문자열·숫자만 준다. casts 는 **읽을 때 PHP 타입으로, 저장할 때 DB 형식으로** 자동 변환한다. 칸을 만드는 쪽(마이그레이션의 `json`·`boolean`·`date` 타입)은 [database.md 3절](database.md#3-컬럼-타입과-수식어) 에 있다.
 
 ### PES 코드 — `User`·`TutorProfile`
 
@@ -338,6 +338,8 @@ $user->tutorProfile     // hasOne 은 모델 하나 또는 null
 ->orWhereHas('user', fn (Builder $user) => $user->where('name', 'ilike', $like))
 ```
 
+화면에서 관계를 반복해 그리는 모습은 [blade.md 3절](blade.md#3-조건반복-지시어) 의 `@forelse`, 괄호를 빼먹었을 때의 증상은 [pitfalls.md 4절](pitfalls.md#4-괄호-하나-차이) 에 있다.
+
 ---
 
 ## 8. 즉시 로딩과 N+1
@@ -359,6 +361,8 @@ foreach ($profiles as $p) {
 ```
 
 이미 가져온 모델에 나중에 붙이려면 `$profiles->load('user')`.
+
+"목록 화면이 느리다"는 증상에서 거꾸로 찾아오려면 [pitfalls.md 3절](pitfalls.md#3-목록-화면이-느림--n1).
 
 ### PES 코드 — `TutorListController::index`
 
@@ -450,6 +454,8 @@ $profile->update([...]);                                  // saving 실행 ✅ (
 TutorProfile::where('id', 1)->update(['bio' => '...']);   // 쿼리 빌더 — saving 없음 ❌ 점수가 옛날 그대로
 DB::table('tutor_profiles')->update([...]);               // 없음 ❌
 ```
+
+이 함정은 증상("완성도 점수가 안 바뀐다")으로 [pitfalls.md 11절](pitfalls.md#11-완성도-점수가-안-바뀜--모델-이벤트-건너뜀) 에도 정리해 두었다.
 
 ---
 

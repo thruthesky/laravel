@@ -136,7 +136,7 @@ cd laravel-study
 php artisan serve          # http://127.0.0.1:8000
 ```
 
-명령마다 실행할 폴더, 설치 뒤 생기는 폴더 구조, `laravel: command not found` 해결은 [install.md](install.md).
+명령마다 실행할 폴더, 설치 뒤 생기는 폴더 구조, `laravel: command not found` 해결은 [install.md](install.md#2-명령별-실행-폴더와-생기는-폴더).
 
 ### 과제 (각 과제가 PES 의 어느 코드와 같은 개념인지 함께 보여 준다)
 

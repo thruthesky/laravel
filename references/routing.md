@@ -47,7 +47,7 @@ Laravel 은 이 분기표를 `routes/web.php` 에 선언형으로 적는다.
 | `Route::put` / `patch` | 고치기 | `/tutor/schedule/timezone` |
 | `Route::delete` | 지우기 | `/tutor/schedule/slots/{slot}` |
 
-HTML 폼은 GET·POST 만 보낼 수 있다. PUT·DELETE 는 POST 로 보내고 폼 안에 `@method('PUT')` 를 넣는다(→ [blade.md](blade.md)).
+HTML 폼은 GET·POST 만 보낼 수 있다. PUT·DELETE 는 POST 로 보내고 폼 안에 `@method('PUT')` 를 넣는다(→ [blade.md 7절](blade.md#7-폼-지시어)).
 
 ---
 
@@ -119,7 +119,7 @@ route('tutor.slots.destroy', ['slot' => 5]);               // http://…/tutor/s
 redirect()->route('tutor.schedule');                        // 그 URL 로 이동
 ```
 
-**PES 는 `route()` 대신 `lroute()`** 를 쓴다 — 보고 있는 언어의 접두사(`/ko`)를 붙여 준다([lifecycle.md](lifecycle.md) 7절).
+**PES 는 `route()` 대신 `lroute()`** 를 쓴다 — 보고 있는 언어의 접두사(`/ko`)를 붙여 준다([lifecycle.md 7절](lifecycle.md#7-직접-만든-전역-함수--apphelpersphp)).
 
 ```blade
 <form method="post" action="{{ lroute('tutor.slots.destroy', ['slot' => $slot->id]) }}">
@@ -240,7 +240,7 @@ Route::middleware('auth')          // 미들웨어
 
 ### 핵심 개념
 
-PES 는 17개 언어를 URL 접두사로 나눈다: 영어는 `/tutor/schedule`, 한국어는 `/ko/tutor/schedule`. `Route::localized` 는 **같은 라우트 묶음을 두 번 등록**하는 매크로다(`AppServiceProvider::boot()` 에서 정의, [lifecycle.md](lifecycle.md) 4절).
+PES 는 17개 언어를 URL 접두사로 나눈다: 영어는 `/tutor/schedule`, 한국어는 `/ko/tutor/schedule`. `Route::localized` 는 **같은 라우트 묶음을 두 번 등록**하는 매크로다(`AppServiceProvider::boot()` 에서 정의, [lifecycle.md 4절](lifecycle.md#4-서비스-프로바이더--register-와-boot)).
 
 ```php
 Route::macro('localized', function (Closure $routes) {

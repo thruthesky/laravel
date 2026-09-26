@@ -352,7 +352,7 @@ public function destroy(Request $request): RedirectResponse
 | `$request->session()->regenerate()` | `session_regenerate_id(true)` |
 | `Auth::logout()` | `unset($_SESSION['user_id'])` |
 
-비밀번호 저장은 `User` 모델의 `'password' => 'hashed'` cast 가 자동으로 해시한다([eloquent.md](eloquent.md) 6절).
+비밀번호 저장은 `User` 모델의 `'password' => 'hashed'` cast 가 자동으로 해시한다([eloquent.md 6절](eloquent.md#6-casts-와-기본값)).
 
 ---
 

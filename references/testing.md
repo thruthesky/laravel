@@ -74,6 +74,7 @@ pest()->use(RefreshDatabase::class);   // 이 파일의 테스트는 DB 를 쓴�
 - 첫 테스트 전에 테스트 DB 에 마이그레이션을 한 번 적용한다.
 - **테스트마다 트랜잭션을 열고 끝나면 롤백**한다 → 테스트끼리 데이터가 섞이지 않는다.
 - 테스트 DB 는 `phpunit.xml` 이 정한다: `DB_CONNECTION=pgsql`, `DB_DATABASE=pes_test`. 개발 DB 의 데이터는 건드리지 않는다.
+- 테스트 데이터는 팩토리로 만든다 → [database.md 8절](database.md#8-팩토리--테스트용-가짜-데이터).
 
 ---
 

@@ -198,7 +198,7 @@ docker compose exec app php artisan db:table tutor_slots   # 지금 테이블 �
 
 - `migrate:fresh` 는 **데이터를 전부 지운다.** 로컬 전용. 운영 서버에서는 절대 쓰지 않는다.
 - 운영 배포는 `migrate`(앞으로만)만 쓴다.
-- 테스트는 `RefreshDatabase` 가 테스트 DB(`pes_test`)에서 알아서 마이그레이션한다([testing.md](testing.md)).
+- 테스트는 `RefreshDatabase` 가 테스트 DB(`pes_test`)에서 알아서 마이그레이션한다([testing.md 3절](testing.md#3-db-를-쓰는-테스트--refreshdatabase)).
 
 ---
 
@@ -284,7 +284,7 @@ public function run(): void
 }
 ```
 
-PES 의 실제 초기 데이터(시험 문항·번역)는 시더가 아니라 직접 만든 Artisan 명령(`import:exam`, `import:messages`)이 넣는다([artisan.md](artisan.md)).
+PES 의 실제 초기 데이터(시험 문항·번역)는 시더가 아니라 직접 만든 Artisan 명령(`import:exam`, `import:messages`)이 넣는다([artisan.md 7절](artisan.md#7-직접-만든-명령--userrole)).
 
 ---
 

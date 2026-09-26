@@ -259,7 +259,7 @@ layouts/app.blade.php                 tutor/schedule.blade.php
 </form>
 ```
 
-라우트는 `Route::delete('/tutor/schedule/slots/{slot}', ...)` — 폼은 POST 로 보내지만 `_method=DELETE` 를 보고 Laravel 이 DELETE 라우트에 맞춘다.
+라우트는 `Route::delete('/tutor/schedule/slots/{slot}', ...)` — 폼은 POST 로 보내지만 `_method=DELETE` 를 보고 Laravel 이 DELETE 라우트에 맞춘다. 라우트 쪽은 [routing.md 의 HTTP 메서드](routing.md#http-메서드), 419·405 가 뜨면 [pitfalls.md 6절](pitfalls.md#6-419-page-expired--405-method-not-allowed).
 
 ### flash 메시지 보여 주기
 
@@ -268,6 +268,8 @@ layouts/app.blade.php                 tutor/schedule.blade.php
     <p class="form-status" role="status">{{ session('status') }}</p>
 @endif
 ```
+
+메시지를 넣는 쪽(컨트롤러의 `->with('status', ...)`)은 [controllers.md 7절](controllers.md#7-flash-세션--한-번만-보이는-메시지).
 
 ---
 

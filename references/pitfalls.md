@@ -103,7 +103,7 @@ TutorSlot::findOrFail($slot)->delete();                            // ❌ 아무
 $request->user()->tutorSlots()->findOrFail($slot)->delete();       // ✅ 내 칸 중에서만 — 남의 것은 404 (PES)
 ```
 
-라우트 모델 바인딩(`TutorSlot $slot`)도 소유를 검사하지 않는다 → 정책이나 관계로 막는다([routing.md](routing.md) 5절).
+라우트 모델 바인딩(`TutorSlot $slot`)도 소유를 검사하지 않는다 → 정책이나 관계로 막는다([routing.md 5절](routing.md#5-url-매개변수와-모델-바인딩)).
 
 ## 8. 메시지가 한 번만 보이고 사라짐
 
