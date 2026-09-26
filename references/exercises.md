@@ -98,6 +98,39 @@
 | 7-3 | 테스트끼리 데이터가 섞이지 않는 이유는? | `RefreshDatabase` 가 테스트마다 트랜잭션을 롤백 |
 | 7-4 | PES 에서 테스트 기대값은 어디서 가져오나? | PES-SSOT.md 규정. 지금 코드의 출력이 아니다 |
 
+### 심화 — 관계 더 알기 ([relations.md](relations.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| R-1 | `User` 와 `Role` 의 다대다 피벗 테이블 이름과 두 칸을 규칙대로 적으시오. | `role_user` — `role_id`, `user_id`. 단수 snake_case 를 알파벳순으로 잇는다 |
+| R-2 | 글 수정 화면에서 체크박스로 고른 태그를 저장한다. `attach()` 가 아니라 `sync()` 를 쓰는 이유는? 그리고 `sync([])` 의 결과는? | 화면의 체크 목록이 곧 "지금 상태" 이므로 차이만 넣고 빼는 `sync()` 가 맞다. `attach()` 는 중복을 만든다. `sync([])` 는 모든 태그를 떼어 낸다 |
+| R-3 | 목록에 글마다 댓글 수를 보여 주려고 `$post->comments->count()` 를 썼다. 무엇이 문제이고 어떻게 고치나? | 글마다 댓글 전부를 불러온다(N+1 + 불필요한 데이터). `Post::withCount('comments')` 로 개수만 세고 `$post->comments_count` 를 쓴다 |
+| R-4 | 다형 관계의 `commentable_type` 칸에 기본으로 무엇이 저장되고, 왜 `enforceMorphMap` 을 권하나? | 클래스 전체 이름(`App\Models\Post`). 클래스를 옮기면 옛 값이 깨지므로 짧은 별명을 등록하고, 등록 안 된 모델은 예외로 막는다 |
+| R-5 | `Post::whereHas('comments', fn ($q) => $q->where('approved', true))->with('comments')->get()` 에서 `$post->comments` 는 승인된 댓글만인가? | 아니다. 거르기와 로딩은 별개라 모든 댓글이 붙는다. 같은 조건이면 `withWhereHas()` 를 쓴다 |
+| R-6 | PES 의 `AdminLog` 는 `subject_type`·`subject_id` 를 쓴다. Laravel 의 어떤 개념과 같고, 무엇이 다른가? | 다형 참조와 같은 생각이다. 다만 `morphTo()` 관계를 선언하지 않고 `getTable()` 로 테이블 이름을 직접 적는다(쓰기 위주라서) |
+
+### 심화 — 트랜잭션 ([transactions.md](transactions.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| T-1 | `DB::transaction(function () { … })` 안에서 예외가 나면 무슨 일이 일어나고, 호출한 쪽에는 무엇이 전달되나? | 롤백한 뒤 **같은 예외를 다시 던진다.** 호출한 쪽은 예외를 받는다(성공하면 클로저의 반환값을 받는다) |
+| T-2 | 클로저 안에서 `try { … } catch (Throwable $e) { logger($e->getMessage()); }` 로 예외를 잡았다. 롤백되나? | 안 된다. Laravel 은 예외가 없으니 성공으로 보고 commit 한다. 잡았으면 `throw $e;` 로 다시 던진다 |
+| T-3 | 예약을 저장하는 트랜잭션 안에서 확인 메일 큐 작업을 보냈더니, 가끔 워커가 "예약이 없다"는 오류를 낸다. 원인과 해결은? | 워커는 다른 DB 연결이라 commit 전의 행을 못 본다. `dispatch(...)->afterCommit()` 이나 큐 설정 `after_commit => true` 로 commit 뒤에 보낸다 |
+| T-4 | 남은 자리 1개인 수업에 두 명이 동시에 예약해 2건이 생겼다. `lockForUpdate()` 를 트랜잭션 **밖**에서 썼다면 막혔을까? | 못 막는다. 잠금은 트랜잭션이 끝날 때 풀리는데, 트랜잭션 밖이면 SELECT 가 끝나는 순간(자동 커밋) 풀린다. `DB::transaction()` 안에서 잠그고 확인·저장까지 해야 한다 |
+| T-5 | 가입 폼에 `Rule::unique('users', 'email')` 검증이 있는데도 같은 이메일 계정이 두 개 생겼다. 왜이며, 무엇을 더해야 하나? | 동시 요청은 둘 다 검증 시점에 "없음"을 보고 통과한다(경쟁 조건). DB 에 `unique('email')` 제약을 걸어 두 번째 INSERT 를 DB 가 거절하게 한다(`UniqueConstraintViolationException`) |
+| T-6 | `$post->views++; $post->save();` 와 `$post->increment('views');` 의 차이는? | 앞은 PHP 가 읽은 값에 1 을 더해 **덮어쓴다** → 동시 요청이면 증가가 사라진다. 뒤는 `UPDATE … SET views = views + 1` 로 **DB 가 더한다**(원자적) |
+
+### 심화 — 디버깅·로그·예외 ([debugging.md](debugging.md))
+
+| # | 문제 | 정답·해설 |
+|---|---|---|
+| D-1 | `fetch()` 로 부르는 저장 API 에 `dd($request->all())` 를 넣었는데 화면에 아무것도 안 보인다. 어디서 봐야 하나? | 브라우저 개발자 도구의 네트워크 탭 → 그 요청의 응답 본문. 또는 `logger()` 로 남기고 `php artisan pail` 로 본다 |
+| D-2 | `toSql()` 과 `toRawSql()` 의 차이는? DB 콘솔에서 `EXPLAIN` 하려면 어느 쪽인가? | `?` 자리표시자 그대로 / 값까지 채움. 바로 실행할 수 있는 `toRawSql()` |
+| D-3 | `Log::error("결제 실패 order=$id")` 보다 `Log::error('결제 실패', ['order_id' => $id])` 가 나은 이유는? | 메시지가 고정돼 같은 오류를 세고 검색하기 쉽다. 바뀌는 값은 컨텍스트 배열이 구조화해 남긴다 |
+| D-4 | Laravel 11+ 에서 옛 `app/Exceptions/Handler.php` 의 역할은 어디로 갔나? PES 는 거기서 무엇을 설정하나? | `bootstrap/app.php` 의 `withExceptions()`. PES 는 `shouldRenderJsonWhen` 으로 `api/*` 이거나 JSON 을 원하는 요청의 오류를 JSON 으로 그린다 |
+| D-5 | 외부 환율 API 가 실패해도 페이지는 떠야 한다. 예외를 기록하고 기본값으로 계속 가는 한 줄은? | `rescue(fn () => ExchangeApi::fetch(), config('pay.default_rate'))` — 빈 `catch` 로 삼키지 않는다 |
+| D-6 | 운영 서버에서 `APP_DEBUG=true` 면 무엇이 위험한가? | 오류 화면에 스택 트레이스·환경 변수·DB 정보·코드 경로가 드러날 수 있다. 운영은 반드시 `false` |
+
 ---
 
 ## 3. tinker 조회 실습

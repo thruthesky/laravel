@@ -18,13 +18,14 @@
   var groups = [
     ['시작', function (x) { return x.slug === 'skill'; }],
     ['공부 로드맵', function (x) { return typeof x.stage === 'number'; }],
-    ['수시로 보기', function (x) { return typeof x.stage !== 'number' && x.slug !== 'skill'; }]
+    ['수시로 보기', function (x) { return typeof x.stage !== 'number' && x.slug !== 'skill' && x.stage !== '심화'; }],
+    ['심화 — 실무로', function (x) { return x.stage === '심화'; }]
   ];
   var h = '';
   groups.forEach(function (g) {
     h += '<div class="lbl">' + g[0] + '</div>';
     L.docs.filter(g[1]).forEach(function (x) {
-      var n = typeof x.stage === 'number' ? x.stage : (BADGE[x.slug] || '·');
+      var n = typeof x.stage === 'number' ? x.stage : (BADGE[x.slug] || (x.stage === '심화' ? '◆' : '·'));
       h += '<a class="d' + (x === d ? ' cur" aria-current="page' : '') + '" href="doc.html?d=' + x.slug + '">' +
         '<span class="n">' + L.esc(n) + '</span><span>' + L.esc(x.short) + '</span></a>';
       if (x === d) h += '<nav class="toc" id="toc" aria-label="이 문서의 목차"></nav>';

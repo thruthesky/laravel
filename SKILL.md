@@ -1,6 +1,6 @@
 ---
 name: laravel
-description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치는 Laravel 13 공부 도우미. PES 저장소의 실제 코드(라우트·미들웨어·컨트롤러·FormRequest·Eloquent 모델·Blade·마이그레이션·팩토리·Artisan 명령·Pest 테스트)를 예제로 삼아 기초 암기 → 요청 한 바퀴 따라가기 → 주제별 심화 → 퀴즈·실습 순서로 가르친다. 사용자가 Laravel 을 공부·학습·복습하고 싶다고 할 때, Laravel 개념(설치·laravel new·composer create-project·명령을 실행할 폴더, 요청 흐름, 서비스 컨테이너, Facade, 서비스 프로바이더, config·env, 라우트, 라우트 모델 바인딩, 미들웨어, 검증, 세션 flash, 인증, 정책, Eloquent, 관계, 스코프, casts, 모델 이벤트, Collection, N+1, Blade, 컴포넌트, 슬롯, 마이그레이션, 팩토리, 시더, Artisan, tinker, Pest)을 물을 때, "이 코드가 무슨 뜻이냐"·"왜 이렇게 쓰냐"처럼 PES 코드를 Laravel 관점에서 풀어 달라고 할 때, 암기 카드·퀴즈·연습 문제·공부 순서를 원할 때, 인터넷 튜토리얼(Laravel 8~10)과 이 프로젝트 코드가 달라 헷갈릴 때 반드시 사용한다. 예약·강사 기능을 실제로 구현하는 일은 booking 스킬이 맡는다. Keywords - Laravel, 라라벨, 공부, 학습, 스터디, 기초, 암기, 복습, 퀴즈, 튜토리얼, Eloquent, Blade, Artisan, tinker, route, middleware, migration, facade.
+description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치는 Laravel 13 공부 도우미. PES 저장소의 실제 코드(라우트·미들웨어·컨트롤러·FormRequest·Eloquent 모델·Blade·마이그레이션·팩토리·Artisan 명령·Pest 테스트)를 예제로 삼아 기초 암기 → 요청 한 바퀴 따라가기 → 주제별 심화 → 퀴즈·실습 순서로 가르친다. 사용자가 Laravel 을 공부·학습·복습하고 싶다고 할 때, Laravel 개념(설치·laravel new·composer create-project·명령을 실행할 폴더, 요청 흐름, 서비스 컨테이너, Facade, 서비스 프로바이더, config·env, 라우트, 라우트 모델 바인딩, 미들웨어, 검증, 세션 flash, 인증, 정책, Eloquent, 관계, 스코프, casts, 모델 이벤트, Collection, N+1, Blade, 컴포넌트, 슬롯, 마이그레이션, 팩토리, 시더, Artisan, tinker, Pest)을 물을 때, "이 코드가 무슨 뜻이냐"·"왜 이렇게 쓰냐"처럼 PES 코드를 Laravel 관점에서 풀어 달라고 할 때, 암기 카드·퀴즈·연습 문제·공부 순서를 원할 때, 인터넷 튜토리얼(Laravel 8~10)과 이 프로젝트 코드가 달라 헷갈릴 때 반드시 사용한다. 예약·강사 기능을 실제로 구현하는 일은 booking 스킬이 맡는다. Keywords - Laravel, 라라벨, 다대다, 트랜잭션, 큐, 이벤트, 메일, 캐시, 파일 업로드, API, Sanctum, 보안, 디버깅, 로그, 배포, 공부, 학습, 스터디, 기초, 암기, 복습, 퀴즈, 튜토리얼, Eloquent, Blade, Artisan, tinker, route, middleware, migration, facade.
 ---
 
 # Laravel 공부 — PES 코드로 배우는 Laravel 13
@@ -12,7 +12,8 @@ description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치�
 3. [공부 로드맵 7단계](#공부-로드맵-7단계)
 4. [기초 암기 카드](#기초-암기-카드)
 5. [옛 튜토리얼과 이 프로젝트의 차이](#옛-튜토리얼과-이-프로젝트의-차이)
-6. [참조 문서 지도](#참조-문서-지도)
+6. [심화 과정](#심화-과정)
+7. [참조 문서 지도](#참조-문서-지도)
 
 ## 학생과 가르치는 규칙
 
@@ -42,6 +43,7 @@ description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치�
 | "퀴즈", "복습", "문제 내 주세요" | [exercises.md](references/exercises.md) 의 퀴즈 절차 |
 | "실습", "직접 해 보고 싶어요" | [exercises.md](references/exercises.md) 의 tinker 실습 또는 연습 프로젝트 과제 |
 | "이거 옛날 방식이에요?" | [차이표](#옛-튜토리얼과-이-프로젝트의-차이) + vendor 소스 확인 |
+| "큐가 뭐예요?", "배포는 어떻게 해요?" 처럼 7단계 밖의 실무 주제 | [심화 과정](#심화-과정) 표에서 문서를 골라 같은 방식으로 |
 | 예약·강사 기능을 **구현**하려는 요청 | 이 스킬이 아니라 booking 스킬 |
 
 ## 공부 로드맵 7단계
@@ -59,6 +61,7 @@ description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치�
 | 6 | DB 구조 | [database.md](references/database.md) | 마이그레이션 하나를 읽고 만들어질 테이블을 그린다. 팩토리로 테스트 데이터를 만든다 |
 | 7 | 테스트 | [testing.md](references/testing.md) | PES 의 Pest 테스트 하나를 읽고 무엇을 검사하는지 말한다 |
 | 수시 | 명령·함정 | [artisan.md](references/artisan.md) · [pitfalls.md](references/pitfalls.md) | `route:list`·`tinker`·`model:show` 로 스스로 조사한다. 함정 12개를 피한다 |
+| 심화 | 실무 주제 | [심화 과정](#심화-과정) | 7단계를 마친 뒤 필요한 주제부터. 문서마다 "마치면 할 수 있는 것"이 있다 |
 
 1~3단계는 하루씩, 4단계는 2~3일을 잡는다. 1단계를 마치면 바로 [lifecycle.md](references/lifecycle.md) 의 "요청 한 바퀴 따라가기"를 해 본다 — 이후 단계는 그 한 바퀴의 각 칸을 깊게 파는 일이다.
 
@@ -178,6 +181,18 @@ php artisan make:model Post -mf       # 모델 + 마이그레이션 + 팩토리 
 | `class CreateUsersTable extends Migration` | `return new class extends Migration` (익명 클래스) |
 | `scopeVisible()` 만 | `scopeVisible()` 또는 `#[Scope] protected function visible()` (PES 는 `scope` 접두사) |
 
+## 심화 과정
+
+7단계를 마친 뒤 실제 서비스를 만들 때 만나는 주제다. 순서는 자유지만 **관계 심화 → 트랜잭션 → 디버깅** 을 먼저 권한다 — 연습 프로젝트 "미니 게시판"([exercises.md](references/exercises.md#4-연습-프로젝트--미니-게시판))에서 가장 먼저 부딪힌다. PES 에 없는 기능이 많아 예제는 대부분 **일반 Laravel 예**(미니 게시판)이고, PES 코드는 이미 발췌된 곳에서만 인용한다.
+
+| 문서 | 이럴 때 | 마치면 할 수 있는 것 |
+|---|---|---|
+| [관계 심화](references/relations.md) | "글에 태그를 달고 싶다", "댓글 수를 목록에 같이 보여 주고 싶다" | 글–태그 같은 다대다 관계를 만들고 sync 로 고치며, withCount 로 개수를 N+1 없이 센다 |
+| [트랜잭션·잠금](references/transactions.md) | "저장이 반만 되었다", "같은 시간이 두 번 예약됐다" | 여러 저장을 한 트랜잭션으로 묶고, 동시에 두 요청이 와도 데이터가 깨지지 않게 만든다 |
+| [디버깅·로그](references/debugging.md) | "500 오류가 났다", "어떤 SQL 이 나가는지 보고 싶다" | 오류가 나면 로그 → 라우트 → tinker → dd 순서로 원인을 좁히고, 예외를 원하는 응답으로 바꾼다 |
+
+가르치는 방법은 7단계와 같다(개념 → 순수 PHP 비교 → 코드 → 확인 문제 2~3개). 퀴즈는 [exercises.md](references/exercises.md#2-문제-은행) 문제 은행의 "심화" 표를 쓴다. 심화 문서의 API 는 Laravel 13 소스(`vendor/laravel/framework/src`)로 확인해 두었지만, 설명하기 전에 사용자의 프로젝트 버전을 한 번 더 확인한다.
+
 ## 참조 문서 지도
 
 주제별 문서다. 필요한 문서만 읽는다. 모든 문서는 **핵심 개념 → 순수 PHP 비교 → PES 실제 코드 → 암기 카드** 순서로 되어 있다.
@@ -225,3 +240,15 @@ PHP 는 잘하지만 Laravel 이 처음인 사람이 실제로 빠지는 함정 
 ### 퀴즈·실습 → [references/exercises.md](references/exercises.md)
 
 퀴즈를 내고 채점하는 절차, 단계별 문제 은행(개념 문제와 PES 코드 읽기 문제, 정답·해설 포함), `tinker` 에서 해 보는 조회 실습, PES 저장소 밖 연습 프로젝트에서 사용자가 직접 만드는 "미니 게시판" 과제(라우트 → 마이그레이션 → 모델 → 컨트롤러 → Blade → 테스트 순서, 단계별 확인 기준)를 담고 있다.
+
+### 심화 관계 심화 → [references/relations.md](references/relations.md)
+
+다대다·피벗·관계 집계·다형 — belongsToMany·피벗 테이블·sync, hasManyThrough, 다형 관계, withCount·whereRelation, 제약 있는 즉시 로딩. 마치면: 글–태그 같은 다대다 관계를 만들고 sync 로 고치며, withCount 로 개수를 N+1 없이 센다.
+
+### 심화 트랜잭션·잠금 → [references/transactions.md](references/transactions.md)
+
+DB::transaction·잠금·경쟁 조건 — DB::transaction, afterCommit, lockForUpdate, 낙관적 잠금, createOrFirst·upsert, 원자적 증가, DB 제약. 마치면: 여러 저장을 한 트랜잭션으로 묶고, 동시에 두 요청이 와도 데이터가 깨지지 않게 만든다.
+
+### 심화 디버깅·로그 → [references/debugging.md](references/debugging.md)
+
+디버깅·로그·예외 처리 — 디버깅 순서, dump·dd, toRawSql·쿼리 로그, Log 채널·pail, withExceptions, abort, 오류 화면·APP_DEBUG. 마치면: 오류가 나면 로그 → 라우트 → tinker → dd 순서로 원인을 좁히고, 예외를 원하는 응답으로 바꾼다.

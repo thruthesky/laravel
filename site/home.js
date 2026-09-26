@@ -31,22 +31,24 @@
   L.$$('.install pre code').forEach(function (c) { L.highlight(c, 'bash'); L.codeBox(c.parentNode, 'bash'); });
 
   /* ── 로드맵 ───────────────────────────────────────────── */
-  var road = L.$('#road');
-  L.docs.filter(function (d) { return typeof d.stage === 'number' || ['artisan', 'pitfalls', 'exercises'].indexOf(d.slug) >= 0; })
+  var road = L.$('#road'), deep = L.$('#deep');
+  L.docs.filter(function (d) { return typeof d.stage === 'number' || ['artisan', 'pitfalls', 'exercises'].indexOf(d.slug) >= 0 || d.stage === '심화'; })
     .forEach(function (d) {
+      var box = d.stage === '심화' ? deep : road;
+      if (!box) return;
       var el = document.createElement('div');
       var misc = typeof d.stage !== 'number';
       el.className = 'stage' + (misc ? ' misc' : '');
       el.innerHTML =
         (d.star ? '<span class="star">★ 핵심</span>' : '') +
-        '<div class="top-row"><span class="num">' + L.esc(misc ? d.stage : d.stage) + '</span>' +
+        '<div class="top-row"><span class="num">' + L.esc(d.stage === '심화' ? '◆' : d.stage) + '</span>' +
         '<div><h3><a href="doc.html?d=' + d.slug + '"></a></h3><div class="meta"></div></div></div>' +
         (d.goal ? '<p class="goal"><b>' + (misc ? '이 문서로' : '마치면 할 수 있는 것') + '</b></p>' : '<p class="goal"></p>') +
         '<div class="heads" data-no-gl></div>';
       el.querySelector('h3 a').textContent = d.short;
       el.querySelector('.meta').textContent = d.title;
       el.querySelector('.goal').appendChild(document.createTextNode(d.goal || d.desc));
-      road.appendChild(el);
+      box.appendChild(el);
       L.loadParsed(d.slug).then(function (P) {
         var hs2 = P.heads.filter(function (h) { return h.lv === 2 && h.text !== '목차' && !/암기 카드$/.test(h.text); });
         var box = el.querySelector('.heads');
