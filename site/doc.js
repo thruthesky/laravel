@@ -81,6 +81,18 @@
 
     L.enhance(art, { slug: slug, isPage: true, noGloss: true });
 
+    // 1단계 문서 — 글자 그림 흐름도 앞에 팝업이 되는 흐름도를 끼우고, 글자 그림은 접어 둔다
+    var flowH = slug === 'lifecycle' && L.flowBox ? document.getElementById('흐름도') : null;
+    var flowPre = flowH && flowH.nextElementSibling;
+    if (flowPre && flowPre.classList.contains('codebox')) {
+      var det = document.createElement('details');
+      det.className = 'ascii';
+      det.innerHTML = '<summary>글자 그림으로 보기 — 서비스 프로바이더·미들웨어 뒷부분까지 더 자세히</summary>';
+      flowPre.parentNode.insertBefore(L.flowBox(), flowPre);
+      flowPre.parentNode.insertBefore(det, flowPre);
+      det.appendChild(flowPre);
+    }
+
     // 절 링크(#)
     hs.forEach(function (el) {
       if (el.tagName !== 'H2' && el.tagName !== 'H3') return;

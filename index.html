@@ -42,18 +42,8 @@
       </div>
 
       <div class="flow" id="flow">
-        <div class="t">요청 한 바퀴 — 단어에 마우스를 올려 보세요</div>
-        <ol>
-          <li><span class="dot">1</span><div>브라우저 요청 <small>GET /ko/tutor/schedule</small></div></li>
-          <li><span class="dot">2</span><div><code>public/index.php</code><small>모든 요청의 입구 (순수 PHP 의 front controller)</small></div></li>
-          <li><span class="dot">3</span><div><code>bootstrap/app.php</code><small>앱 조립 — 라우트 파일·미들웨어·예외 처리 등록</small></div></li>
-          <li><span class="dot">4</span><div>미들웨어<small>로그인 검사·CSRF·언어 결정 — 컨트롤러 앞뒤의 필터</small></div></li>
-          <li><span class="dot">5</span><div><code>routes/web.php</code><small>URL + HTTP 메서드 → 컨트롤러 메서드</small></div></li>
-          <li><span class="dot">6</span><div>컨트롤러<small>검증 → 모델 → 응답</small></div></li>
-          <li><span class="dot">7</span><div>모델(Eloquent)<small>테이블 1개 = 클래스 1개</small></div></li>
-          <li><span class="dot">8</span><div><code>view('tutor.schedule')</code><small>resources/views/tutor/schedule.blade.php — Blade</small></div></li>
-          <li><span class="dot">9</span><div>응답<small>HTML · JSON · redirect</small></div></li>
-        </ol>
+        <div class="t">요청 한 바퀴 — 단어나 [자세히] 에 마우스를 올려 보세요</div>
+        <ol id="flowList"></ol>
         <div class="flow-foot">자세히는 <a href="doc.html?d=lifecycle#1-요청-한-바퀴" data-pv="lifecycle#1-요청-한-바퀴">1단계 — 요청 한 바퀴</a> · 파일 단위로 따라가는 <a href="doc.html?d=lifecycle#8-실습-요청-한-바퀴-따라가기" data-pv="lifecycle#8-실습-요청-한-바퀴-따라가기">실습</a></div>
       </div>
     </section>
@@ -158,6 +148,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
 <script src="site/docs.js"></script>
 <script src="site/lib.js"></script>
+<script src="site/flow.js"></script>
 <script src="site/popup.js"></script>
 <script src="site/search.js"></script>
 <script src="site/home.js"></script>

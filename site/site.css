@@ -685,3 +685,14 @@ td.ans.open { cursor: auto; }
 td.ans.open .ans-b { float: right; margin: 0 0 4px 8px; font-size: 11.5px; padding: 1px 8px; opacity: .75; }
 .pop .quiz-bar { margin-top: .6em; font-size: 12px; }
 table.quiz td:first-child { white-space: nowrap; }
+
+/* ── 흐름도 단계 팝업 ─────────────────────────────────────── */
+.flow li { grid-template-columns: 28px minmax(0, 1fr) auto; }
+.flow .flow-go {
+  align-self: center; font-size: 12px; font-weight: 700; white-space: nowrap; text-decoration: none;
+  color: var(--accent-ink); padding: 2px 8px; border-radius: 999px; border: 1px solid transparent;
+}
+.flow .flow-go:hover, .flow .flow-go.gl-open { border-color: var(--accent-line); background: var(--accent-soft); }
+.flow-doc { margin: 1em 0; }
+.md details.ascii { margin: .6em 0 1em; }
+.md details.ascii > summary { cursor: pointer; font-size: 13px; color: var(--muted); font-weight: 600; }
