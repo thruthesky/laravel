@@ -120,6 +120,12 @@ for e in G:
         warns.append(f'glossary: {t} — official 에 # 앵커가 있다 {off}')
     if e.get('example', {}).get('code'):
         n_ex += 1
+    # 팝업·용어 사전은 이 칸들을 마크다운(HTML 통과)으로 그린다 — 백틱 밖의 태그는 화면을 깨뜨린다(<script> 등)
+    for k in ('short', 'desc', 'php'):
+        if re.search(r'<[A-Za-z/!]', re.sub(r'`[^`]*`', '', e.get(k) or '')):
+            errors.append(f'glossary: {t} — {k} 에 백틱 밖 HTML 태그가 있다(`<…>` 로 감쌀 것)')
+    if re.search(r'<[A-Za-z/!]', re.sub(r'`[^`]*`', '', (e.get('example') or {}).get('caption') or '')):
+        errors.append(f'glossary: {t} — 예제 caption 에 백틱 밖 HTML 태그가 있다')
     for s in [t] + (e.get('aliases') or []):
         core = s[:-2] if s.endswith('()') else s
         key = (core, s.endswith('()'))
@@ -144,6 +150,8 @@ if os.path.exists(np_):
     seen_n = set()
     for n in NOTES:
         sl, mt = n.get('slug', ''), n.get('match', '')
+        if re.search(r'<[A-Za-z/!]', re.sub(r'`[^`]*`', '', n.get('note') or '')):
+            errors.append(f'notes.json: {sl} "{mt}" — note 에 백틱 밖 HTML 태그가 있다')
         if not n.get('note'):
             errors.append(f'notes.json: {sl} "{mt}" — note 가 비었다')
         if sl not in code_lines:

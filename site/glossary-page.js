@@ -14,9 +14,9 @@
       var d = L.docs.filter(function (x) { return x.stage === s; })[0];
       return s + '단계 · ' + (d ? d.short : '');
     }
-    return s === '수시' ? '수시 · 명령·함정·일반' : String(s);
+    return s === '수시' ? '수시 · 명령·함정·일반' : s === '심화' ? '심화 · 실무 주제' : String(s);
   }
-  function stageKey(s) { return typeof s === 'number' ? s : 99; }
+  function stageKey(s) { return typeof s === 'number' ? s : s === '심화' ? 100 : 99; }
 
   L.gloss.whenReady(function () {
     var G = L.gloss;

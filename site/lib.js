@@ -54,7 +54,7 @@
     var d = L.docBySlug[slug];
     if (!d) return Promise.reject(new Error('없는 문서: ' + slug));
     if (!mdCache[slug]) {
-      mdCache[slug] = fetch(d.path).then(function (r) {
+      mdCache[slug] = fetch(d.path + '?v=' + SITE.v).then(function (r) {
         if (!r.ok) throw new Error(d.path + ' — HTTP ' + r.status);
         return r.text();
       }).then(function (t) { return t.replace(/\r\n/g, '\n').replace(/^---\n[\s\S]*?\n---\n/, ''); });
@@ -300,7 +300,7 @@
   // 코드블록 안의 한 줄(match 문자열이 든 줄) 끝에 번호 배지를 붙이고, 누르거나 올리면 설명 팝업이 뜬다.
   // md 코드블록에는 HTML 을 넣을 수 없어 설명을 따로 둔다. match 가 맞는지는 scripts/check_site.py 가 검사한다
   var NT = L.notes = { list: [], bySlug: {}, done: false };
-  NT.ready = fetch('site/notes.json').then(function (r) {
+  NT.ready = fetch('site/notes.json?v=' + SITE.v).then(function (r) {
     if (!r.ok) throw new Error('notes.json — HTTP ' + r.status);
     return r.json();
   }).then(function (arr) {
@@ -351,7 +351,7 @@
   L.termId = function (t) { return 't-' + t.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '') || 't-x'; };
   L.isCodeTerm = function (t) { return !/^[가-힣]/.test(t) && (/[^A-Za-z가-힣 ]/.test(t) || /^[a-z]/.test(t) || /[a-z][A-Z]/.test(t)); };
 
-  G.ready = fetch('site/glossary.json').then(function (r) {
+  G.ready = fetch('site/glossary.json?v=' + SITE.v).then(function (r) {
     if (!r.ok) throw new Error('glossary.json — HTTP ' + r.status);
     return r.json();
   }).then(function (arr) {
