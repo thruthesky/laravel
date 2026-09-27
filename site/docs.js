@@ -8,7 +8,7 @@
 window.LARAVEL_SITE = {
   repo: 'https://github.com/thruthesky/laravel',
   // 배포할 때 올린다 — md·json 을 브라우저 캐시에서 옛것으로 읽지 않게(html 의 ?v= 와 같은 값)
-  v: '2026092702',
+  v: '2026092703',
   branch: 'main',
   docs: [
     { slug: 'skill', path: 'SKILL.md', stage: '개요', short: '스킬 개요',
@@ -36,7 +36,7 @@ window.LARAVEL_SITE = {
       goal: '관계·스코프·casts 를 읽고, $user->tutorSlots() 와 $user->tutorSlots 의 차이를 말한다. 가장 오래 걸리는 단계' },
     { slug: 'blade', path: 'references/blade.md', stage: 5, short: 'Blade',
       title: 'Blade 템플릿',
-      desc: '{{ }} 출력, 조건·반복, 레이아웃 상속, 컴포넌트·슬롯, 폼 지시어, 번역',
+      desc: '{{ }} 출력, 조건·반복, 레이아웃 상속(@extends·@section·@yield·@parent·@stack), 컴포넌트·슬롯, 폼 지시어, 번역, 헬퍼·유틸리티',
       goal: '레이아웃 상속·컴포넌트·폼 지시어(@csrf·@method·@error)를 읽는다' },
     { slug: 'database', path: 'references/database.md', stage: 6, short: 'DB 구조',
       title: '마이그레이션·팩토리·시더',

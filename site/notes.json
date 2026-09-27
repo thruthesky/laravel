@@ -733,5 +733,65 @@
   "slug": "blade",
   "match": "<div x-data=\"{ rule: @js(config('tutor.slot_minutes')) }\">",
   "note": "`@js` 는 배열을 `JSON.parse('…')` 로 바꾸고 큰따옴표를 `\\u0022` 로 감춰서 속성 안에서도 안전하다."
+ },
+ {
+  "slug": "blade",
+  "match": "ob_start();                                   // 여기부터",
+  "note": "Blade 의 `@section('content')` 가 컴파일되면 바로 이 `ob_start()` 를 부른다(`ManagesLayouts::startSection`)."
+ },
+ {
+  "slug": "blade",
+  "match": "$content = ob_get_clean();                    // 모은 출력",
+  "note": "`@endsection` 이 하는 일이다 — 모은 출력을 꺼내 `$sections['content']` 에 담는다."
+ },
+ {
+  "slug": "blade",
+  "match": "include 'layout.php';                         // 맨 끝에서",
+  "note": "`@extends` 가 이것이다. 화면 맨 위에 적어도 Blade 는 이 코드를 파일 맨 끝으로 옮긴다."
+ },
+ {
+  "slug": "blade",
+  "match": "{{-- ❌ 어느 @section 에도 들어 있지 않다 --}}",
+  "note": "화면은 레이아웃보다 먼저 실행되므로, 칸에 담기지 않은 글자는 그 즉시 출력된다 — 레이아웃이 그려지기 전이다."
+ },
+ {
+  "slug": "blade",
+  "match": "@show                                   {{-- 담아 두고 바로 여기에 찍는다 --}}",
+  "note": "`@show` 는 `yieldSection()` 으로 컴파일된다 — 칸을 닫고 곧바로 `@yield` 한다. 화면이 먼저 채웠으면 화면 내용이 나온다."
+ },
+ {
+  "slug": "blade",
+  "match": "{{-- (다) 기본 내용에 덧붙인다",
+  "note": "`@parent` 는 컴파일될 때 `##parent-placeholder-…##` 라는 자리표시 문자열이 된다. 레이아웃의 `@section` 이 끝날 때 그 자리를 레이아웃 내용으로 바꿔 끼운다."
+ },
+ {
+  "slug": "blade",
+  "match": "<div class=\"tutor-shell\">@yield('tutor-content')</div>",
+  "note": "가운데 레이아웃은 부모의 칸(`content`)을 채우면서 자식에게 새 칸(`tutor-content`)을 연다 — 클래스 계층의 가운데 클래스와 같다."
+ },
+ {
+  "slug": "blade",
+  "match": "@pushOnce('scripts', 'datepicker')                   {{-- 이 id 로는 한 번만 --}}",
+  "note": "id 를 적어야 다른 파일에서 같은 코드를 적어도 한 번만 나간다. id 가 없으면 컴파일할 때 자리마다 무작위 uuid 가 붙는다."
+ },
+ {
+  "slug": "blade",
+  "match": "@section('title', $profile->user->name.' · '.__('tutor.nav'))",
+  "note": "짧은 모양의 두 번째 인자는 `e()` 로 이스케이프되어 담긴다. 강사 이름에 `<` 가 있어도 안전하다."
+ },
+ {
+  "slug": "blade",
+  "match": "<span @class(['badge', 'badge-trial' => $slot->isTrialLength(), 'muted' => $slot->isPast()])></span>",
+  "note": "`Arr::toCssClasses([...])` 로 컴파일된다. 숫자 키 `'badge'` 는 늘 붙고, 문자열 키는 값이 참일 때만 붙는다."
+ },
+ {
+  "slug": "blade",
+  "match": "{{ Str::limit((string) $profile->bio, 100) }}          {{-- PES",
+  "note": "`100` 은 글자 수가 아니라 화면 폭이다. 한글은 한 글자가 폭 2 라서 약 50자에서 잘린다."
+ },
+ {
+  "slug": "blade",
+  "match": "@session('status')                                          {{-- Laravel 11+",
+  "note": "세션에 `status` 가 있을 때만 안쪽을 그리고, 그 값을 `$value` 변수에 넣어 준다. 블록이 끝나면 `$value` 는 지워진다."
  }
 ]

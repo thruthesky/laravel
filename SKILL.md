@@ -225,7 +225,7 @@ php artisan make:model Post -mf       # 모델 + 마이그레이션 + 팩토리 
 
 ### 5단계 Blade → [references/blade.md](references/blade.md)
 
-`<?= htmlspecialchars($x) ?>` 가 `{{ $x }}` 가 되는 것부터 시작한다. 출력 세 가지(`{{ }}`·`{!! !!}`·`{{-- --}}`), 조건·반복 지시어(`@if`·`@unless`·`@isset`·`@forelse`·`$loop`), 레이아웃 상속(`layouts/app.blade.php` 의 `@yield` ↔ `tutor/schedule.blade.php` 의 `@extends`·`@section`), `@include` 부분 화면(`partials/form-errors`), 컴포넌트(`<x-tutor.profile-item>` 파일 위치, `@props`, 기본 `$slot`, 이름 있는 슬롯 `<x-slot:value>`, `:` 로 PHP 값 넘기기), 폼 지시어(`@csrf`·`@method`·`@error`·`@selected`·`@checked`·`old()`), flash 메시지 표시, 번역 `__()` 와 자리표시자, Alpine.js 속성(`x-data`)과 Blade 가 섞일 때 읽는 법을 다룬다.
+`<?= htmlspecialchars($x) ?>` 가 `{{ $x }}` 가 되는 것부터 시작한다. 출력 세 가지(`{{ }}`·`{!! !!}`·`{{-- --}}`), 조건·반복 지시어(`@if`·`@unless`·`@isset`·`@forelse`·`$loop`), 레이아웃 상속(`layouts/app.blade.php` 의 `@yield` ↔ `tutor/schedule.blade.php` 의 `@extends`·`@section` — 순수 PHP 의 `ob_start()`+맨 끝 `include` 와 클래스 상속에 대어 본 실행 순서, `@show`·`@parent`, 여러 단계 상속, `@stack`·`@push`), `@include` 부분 화면(`partials/form-errors`), 컴포넌트(`<x-tutor.profile-item>` 파일 위치, `@props`, 기본 `$slot`, 이름 있는 슬롯 `<x-slot:value>`, `:` 로 PHP 값 넘기기), 폼 지시어(`@csrf`·`@method`·`@error`·`@selected`·`@checked`·`old()`), flash 메시지 표시, 번역 `__()` 와 자리표시자, Alpine.js 속성(`x-data`)과 Blade 가 섞일 때 읽는 법, 뷰에서 자주 쓰는 헬퍼·유틸리티(`route()`·`asset()`·`@session`·`@auth`·`@env`·`Str`·`Number`·Carbon·`@class`·`@includeWhen`·`@use`·`@dump`)와 뷰에서 하지 말 것을 다룬다.
 
 ### 6단계 DB 구조 → [references/database.md](references/database.md)
 

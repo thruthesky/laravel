@@ -141,7 +141,7 @@ laravel/
     ├── routing.md            2단계 라우트·미들웨어
     ├── controllers.md        3단계 컨트롤러·검증·응답·인증·정책
     ├── eloquent.md           4단계 Eloquent — 관계·스코프·casts·N+1·Collection
-    ├── blade.md              5단계 Blade — 레이아웃·컴포넌트·폼
+    ├── blade.md              5단계 Blade — 레이아웃 상속·컴포넌트·폼·헬퍼
     ├── database.md           6단계 마이그레이션·팩토리·시더
     ├── testing.md            7단계 Pest 테스트
     ├── artisan.md            Artisan 명령·tinker

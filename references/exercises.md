@@ -80,6 +80,11 @@
 | 5-5 | 검증 실패 뒤 입력 칸에 이전 값, 없으면 DB 값을 보이려면? | `value="{{ old('headline', $profile->headline) }}"` |
 | 5-6 | `<script>const rule = @json(config('tutor.slot_minutes'));</script>` 에서 `@json` 이 `{{ }}` 대신 쓰이는 이유와, 값에 `</script>` 가 들어 있으면 어떻게 되나? | `{{ }}` 는 HTML 이스케이프라 배열을 JS 값으로 못 넘긴다. `@json` 은 `json_encode(…, 15, 512)` 로 `<` `>` 를 `\u003C` 처럼 감춰 `</script>` 가 블록을 닫지 못한다 |
 | 5-7 | `@json(config('tutor.x', []))` 는 무엇이 위험하고 어떻게 고치나? | `@json` 이 괄호 안을 쉼표로 잘라 `, []` 가 옵션 자리에 들어가고 이스케이프 옵션 `15` 가 사라진다(오류 없음). `@js(config('tutor.x', []))` 를 쓰거나 컨트롤러에서 변수로 넘긴다 |
+| 5-8 | 화면 맨 위의 `@extends('layouts.app')` 은 컴파일된 PHP 에서 어디로 가며, 그래서 무엇이 가능해지나? | 파일 **맨 끝**으로 간다. 화면의 `@section` 이 모두 `$sections` 에 담긴 뒤 레이아웃이 그려지므로, 레이아웃의 `@yield` 가 그 내용을 꺼낼 수 있다(순수 PHP 의 `ob_start()` + 맨 끝 `include`) |
+| 5-9 | 레이아웃에 `@section('sidebar') <a href="/">홈</a> @show` 가 있다. 화면이 ① 아무것도 안 할 때 ② `@section('sidebar') 강사 @endsection` ③ `@section('sidebar') @parent 강사 @endsection` 일 때 결과는? | ① 홈 ② 강사(오버라이드) ③ 홈 강사(`@parent` 자리에 레이아웃 내용) |
+| 5-10 | `@extends` 를 쓴 화면의 첫 줄에 `<p>안내</p>` 를 `@section` 밖에 적었다. 어디에 나오나? | `<!DOCTYPE html>` 보다 앞 — 화면이 먼저 실행되고 레이아웃은 끝에 그려진다. 모든 HTML 을 `@section` 안에 둔다 |
+| 5-11 | 두 컴포넌트가 각자 `@push('scripts') <script src="/js/datepicker.js"></script> @endpush` 를 한다. 한 번만 나가게 하려면? | 둘 다 `@pushOnce('scripts', 'datepicker') … @endPushOnce` — id 를 같게 적는다(id 가 없으면 자리마다 달라 두 번 나간다) |
+| 5-12 | `{{ Str::limit($profile->bio, 100) }}` 이 한국어 소개를 50자쯤에서 자르는 이유와, 정확히 100자로 자르는 법은? | `Str::limit` 은 `mb_strwidth` 로 폭을 세서 한글 한 글자가 2 다. `Str::substr($bio, 0, 100)` |
 
 ### 6단계 — DB 구조 ([database.md](database.md))
 
