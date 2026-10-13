@@ -145,7 +145,7 @@ WORKDIR /app               # 컨테이너 안 명령은 /app 에서 실행
 
 ## 7. 하지 말 것
 
-- **`~/apps/pes` 안에서 `laravel new` 를 실행하지 않는다.** `~/apps/pes/my-app/` 처럼 PES 안에 프로젝트가 하나 더 생겨 git 에 딸려 들어갈 수 있다. 새 프로젝트는 항상 바깥 폴더(`~/apps`)에서 만든다.
+- **`~/apps/sonub` 안에서 `laravel new` 를 실행하지 않는다.** `~/apps/sonub/my-app/` 처럼 PES 안에 프로젝트가 하나 더 생겨 git 에 딸려 들어갈 수 있다. 새 프로젝트는 항상 바깥 폴더(`~/apps`)에서 만든다.
 - **프로젝트 루트가 아닌 곳에서 `php artisan` 을 실행하지 않는다.** `Could not open input file: artisan` 이 나온다 — 지금 폴더에 `artisan` 파일이 없다는 뜻이다.
 - **이미 파일이 있는 폴더에 `composer create-project … .` 를 하지 않는다.** 빈 폴더여야 한다.
 
