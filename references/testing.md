@@ -34,7 +34,7 @@ it('adds a weekly class time', function () { ... });
 PES 규칙([AGENTS.md](../../../../AGENTS.md) "테스트" 절):
 
 - 새 테스트는 Pest 로 쓴다.
-- 기대값은 **PES-SSOT.md 의 규정**에서 옮긴다. 지금 코드가 내는 값을 베끼지 않는다.
+- 기대값은 **SONUB-SSOT.md 의 규정**에서 옮긴다. 지금 코드가 내는 값을 베끼지 않는다.
 - 이 저장소에서 `tests/` 는 AI 가 직접 쓸 수 있는 예외 영역이다(소스 코드는 사람이 쓴다).
 
 ---
@@ -247,4 +247,4 @@ docker compose exec app php artisan test --filter="overlap"                     
 | DB 에서 다시 읽은 모델은? | `$model->fresh()` |
 | 입력만 다른 테스트를 묶는 법은? | `->with([...])` 데이터셋 |
 | 이름으로 골라 실행하는 옵션은? | `--filter=` |
-| 테스트의 기대값은 어디서 가져오나? (PES) | PES-SSOT.md 규정 — 지금 코드 값이 아니다 |
+| 테스트의 기대값은 어디서 가져오나? (PES) | SONUB-SSOT.md 규정 — 지금 코드 값이 아니다 |

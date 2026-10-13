@@ -108,7 +108,7 @@ php artisan serve                                          # http://127.0.0.1:80
 
 ### PES 와 다른 점
 
-골격의 `AGENTS.md`·`CLAUDE.md`(호스트에 PHP 를 설치하라는 안내)와 Node 파일(`package.json`·`vite.config.js`)은 PES 에 넣지 않았다(`PES-DESIGN.md` "로컬 개발 환경" 절). PES 의 `AGENTS.md` 는 PES 가 직접 쓴 개발 지침이다. PES 는 SQLite 대신 PostgreSQL 을 쓴다.
+골격의 `AGENTS.md`·`CLAUDE.md`(호스트에 PHP 를 설치하라는 안내)와 Node 파일(`package.json`·`vite.config.js`)은 PES 에 넣지 않았다(`SONUB-DESIGN.md` "로컬 개발 환경" 절). PES 의 `AGENTS.md` 는 PES 가 직접 쓴 개발 지침이다. PES 는 SQLite 대신 PostgreSQL 을 쓴다.
 
 ---
 

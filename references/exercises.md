@@ -103,7 +103,7 @@
 | 7-1 | `addSlot()` 도우미가 `->from('/tutor/schedule')` 을 붙이는 이유는? | 검증 실패 시 `back()` 이 돌아갈 이전 페이지를 정해 `assertRedirect` 등을 예측 가능하게 |
 | 7-2 | `expect($tutor->tutorProfile->fresh()->offersTrial())` 에서 `fresh()` 를 빼면? | 메모리 속 옛 객체라 요청이 바꾼 DB 값이 반영되지 않아 틀린 결과 |
 | 7-3 | 테스트끼리 데이터가 섞이지 않는 이유는? | `RefreshDatabase` 가 테스트마다 트랜잭션을 롤백 |
-| 7-4 | PES 에서 테스트 기대값은 어디서 가져오나? | PES-SSOT.md 규정. 지금 코드의 출력이 아니다 |
+| 7-4 | PES 에서 테스트 기대값은 어디서 가져오나? | SONUB-SSOT.md 규정. 지금 코드의 출력이 아니다 |
 
 ### 심화 — 관계 더 알기 ([relations.md](relations.md))
 

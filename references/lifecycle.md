@@ -263,7 +263,7 @@ config('tutor.slot_minutes');               // ['min' => 10, 'max' => 180, 'step
 config('tutor.nothing', 'default');         // 없으면 기본값
 ```
 
-PES 규칙: 숫자를 코드에 박지 않고 `config/*.php` 에서 읽는다. 운영 규정 숫자의 기준은 `PES-SSOT.md` 이고, `config/tutor.php`·`config/booking.php` 가 그 숫자를 담는다.
+PES 규칙: 숫자를 코드에 박지 않고 `config/*.php` 에서 읽는다. 운영 규정 숫자의 기준은 `SONUB-SSOT.md` 이고, `config/tutor.php`·`config/booking.php` 가 그 숫자를 담는다.
 
 확인 명령: `docker compose exec app php artisan config:show tutor`
 
