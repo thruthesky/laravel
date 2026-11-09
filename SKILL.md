@@ -1,6 +1,6 @@
 ---
 name: laravel
-description: PHP 는 잘 알지만 Laravel 은 처음인 사용자를 가르치는 Laravel 13 공부 도우미. PES 저장소의 실제 코드(라우트·미들웨어·컨트롤러·FormRequest·Eloquent 모델·Blade·마이그레이션·팩토리·Artisan 명령·Pest 테스트)를 예제로 삼아 기초 암기 → 요청 한 바퀴 따라가기 → 주제별 심화 → 퀴즈·실습 순서로 가르친다. 사용자가 Laravel 을 공부·학습·복습하고 싶다고 할 때, Laravel 개념(설치·laravel new·composer create-project·명령을 실행할 폴더, 요청 흐름, 서비스 컨테이너, Facade, 서비스 프로바이더, config·env, 라우트, 라우트 모델 바인딩, 미들웨어, 검증, 세션 flash, 인증, 정책, Eloquent, 관계, 스코프, casts, 모델 이벤트, Collection, N+1, Blade, 컴포넌트, 슬롯, 마이그레이션, 팩토리, 시더, Artisan, tinker, Pest)을 물을 때, "이 코드가 무슨 뜻이냐"·"왜 이렇게 쓰냐"처럼 PES 코드를 Laravel 관점에서 풀어 달라고 할 때, 암기 카드·퀴즈·연습 문제·공부 순서를 원할 때, 인터넷 튜토리얼(Laravel 8~10)과 이 프로젝트 코드가 달라 헷갈릴 때 반드시 사용한다. 예약·강사 기능을 실제로 구현하는 일은 booking 스킬이 맡는다. Keywords - Laravel, 라라벨, 다대다, 트랜잭션, 큐, 이벤트, 메일, 캐시, 파일 업로드, API, Sanctum, 보안, 디버깅, 로그, 배포, 공부, 학습, 스터디, 기초, 암기, 복습, 퀴즈, 튜토리얼, Eloquent, Blade, Artisan, tinker, route, middleware, migration, facade.
+description: PHP 는 알지만 Laravel 은 처음인 사용자를 위한 Laravel 13 공부 도우미 — 이 저장소의 실제 코드(라우트·미들웨어·컨트롤러·Eloquent·Blade·마이그레이션·Artisan·Pest)로 기초 → 요청 흐름 → 심화 → 퀴즈·실습 순서로 가르친다. Laravel 을 공부하거나 개념·"이 코드가 무슨 뜻이냐"를 물을 때, 퀴즈·암기 카드를 원할 때 사용한다. 예약 기능 구현은 booking 스킬.
 ---
 
 # Laravel 공부 — PES 코드로 배우는 Laravel 13
